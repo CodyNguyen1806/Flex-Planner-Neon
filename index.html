@@ -371,7 +371,115 @@ button{background:linear-gradient(135deg,#0871d8,#049fd2);color:#fff;box-shadow:
 footer{color:#85a3be!important}
 @media(max-width:450px){main{padding:10px 8px 32px!important}.card{padding:12px 11px;margin-bottom:11px;border-radius:17px}.metric{min-height:110px;padding:12px 9px!important}.grid,.fin-cols{gap:8px!important}.fin-tile{padding:11px 9px!important}.metric strong{font-size:clamp(19px,5.5vw,26px)!important}#flex-income-card .fin-tile strong{font-size:clamp(18px,5.3vw,24px)!important}#flex-income-card .fin-month-split .fin-month-line b{font-size:clamp(14px,4.3vw,19px)!important}#flex-income-card .fin-month-split .fin-month-line{gap:4px}#neon-topnav{padding:8px}#neon-topnav a{padding:8px 10px;font-size:11px}.fin-tile small{font-size:11px!important}#flex-income-card .fin-tile:nth-child(5) small{font-size:11px!important}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-</style></head><body><header id="neon-hero"><div class="wrap"><div class="neon-headrow"><div class="neon-brand-mark" aria-hidden="true">◈</div><div><div class="neon-kicker">AMAZON FLEX · PLANNER</div><h1>Driver Tracker <span class="neon-edition">NEON</span></h1><div class="sub">Thu nhập · Rolling 7 Days · Healthcare Subsidy</div></div></div></div></header>
+</style>
+<style id="flex-neon-contrast-fix-20261018">
+/* VISUAL-ONLY contrast repair. No calculations, event handlers, storage, OCR or data are changed.
+   Finance rules were originally loaded AFTER the dark theme and painted white cards. */
+:root{color-scheme:dark;--contrast-panel:#102640;--contrast-border:#365373;--contrast-text:#edf5ff;--contrast-muted:#b0c6e2;}
+/* Earnings review: each date summary and each individual block must remain dark/legible. */
+#flex-income-card .fin-simple-day,
+#flex-income-card .fin-review-row,
+#flex-income-card .fin-ref-row,
+#flex-income-card .fin-ocr-source,
+#flex-income-card .fin-ocr-raw,
+#flex-income-card #fin-income-review-audit,
+#flex-income-card #fin-income-ocr-warnings,
+#flex-income-card .fin-review-row.fin-pending {
+ background:#102640!important;
+ color:#eaf4ff!important;
+ border-color:#365373!important;
+}
+#flex-income-card .fin-review-row.fin-pending{background:#30291e!important;border-color:#98703e!important}
+#flex-income-card .fin-review-row.fin-pending>summary{color:#ffd18a!important}
+#flex-income-card .fin-simple-day>div:first-child,
+#flex-income-card .fin-simple-day>div:first-child *,
+#flex-income-card .fin-review-row>summary,
+#flex-income-card .fin-ref-head,
+#flex-income-card .fin-review-count,
+#flex-income-card .fin-ocr-source>summary,
+#flex-income-card .fin-simple-day b,
+#flex-income-card .fin-simple-day strong{
+ color:#f4f9ff!important;
+}
+#flex-income-card .fin-simple-day .fin-mini,
+#flex-income-card .fin-review-row label,
+#flex-income-card .fin-review-row .fin-mini,
+#flex-income-card .fin-ref-row label,
+#flex-income-card .fin-status,
+#flex-income-card .fin-delete-note,
+#flex-income-card .fin-history-manage>summary,
+#flex-income-card .fin-ocr-raw,
+#flex-income-card .fin-ocr-source small{
+ color:#b1c7df!important;
+}
+#flex-income-card .fin-income-pending{color:#ffbf64!important}
+#flex-income-card .fin-review-row.fin-pending>summary{color:#ffd18a!important}
+#flex-income-card .fin-ref-row input,
+#flex-income-card .fin-review-row input,
+#flex-income-card .fin-review-row select,
+#flex-income-card .fin-audit-check input,
+#flex-income-card .fin-ocr-source input,
+#flex-health-card input,
+#flex-health-card select,
+#flex-review-panel input,
+#flex-review-panel select,
+#flex-review-panel textarea,
+#flex-upgrade input,
+#flex-upgrade select,
+#flex-upgrade textarea {
+ background-color:#091b33!important;
+ color:#f5f9ff!important;
+ -webkit-text-fill-color:#f5f9ff!important;
+ border-color:#44658c!important;
+ color-scheme:dark;
+}
+/* iOS native date/time editor components should not render pale text in white fields. */
+#flex-income-card input[type=date],#flex-income-card input[type=time],
+#flex-health-card input[type=date],#flex-review-panel input[type=date],
+#flex-review-panel input[type=time],#flex-upgrade input[type=date],
+#flex-upgrade input[type=time]{
+ -webkit-appearance:none;appearance:none;
+ background:#091b33!important;color:#f5f9ff!important;
+ -webkit-text-fill-color:#f5f9ff!important;
+ opacity:1!important;
+}
+#flex-income-card input::-webkit-datetime-edit,
+#flex-income-card input::-webkit-datetime-edit-text,
+#flex-income-card input::-webkit-datetime-edit-day-field,
+#flex-income-card input::-webkit-datetime-edit-month-field,
+#flex-income-card input::-webkit-datetime-edit-year-field,
+#flex-income-card input::-webkit-datetime-edit-hour-field,
+#flex-income-card input::-webkit-datetime-edit-minute-field,
+#flex-income-card input::-webkit-datetime-edit-ampm-field,
+#flex-health-card input::-webkit-datetime-edit,
+#flex-review-panel input::-webkit-datetime-edit,
+#flex-upgrade input::-webkit-datetime-edit{color:#f5f9ff!important;-webkit-text-fill-color:#f5f9ff!important}
+#flex-income-card input::placeholder,
+#flex-health-card input::placeholder,
+#flex-review-panel input::placeholder,
+#flex-upgrade input::placeholder{color:#adc1d8!important;-webkit-text-fill-color:#adc1d8!important;opacity:1}
+#flex-income-card select option,#flex-health-card select option,
+#flex-review-panel select option,#flex-upgrade select option{background:#091b33;color:#f5f9ff}
+#flex-income-card input:disabled,#flex-health-card input:disabled,
+#flex-review-panel input:disabled{color:#a9bdd4!important;-webkit-text-fill-color:#a9bdd4!important;opacity:.9}
+/* Confirmation area: dark card on dark skin, with real checkbox contrast. */
+#flex-earnings-close{
+ background:#102640!important;color:#edf6ff!important;border-color:#365373!important;
+}
+#flex-earnings-close .flex-day-close-title,
+#flex-earnings-close .flex-day-close-preview,
+#flex-earnings-close .flex-close-check,
+#flex-earnings-close .flex-close-day{color:#edf6ff!important}
+#flex-earnings-close .flex-close-day{border-color:#3a587a!important}
+#flex-earnings-close input[type=checkbox],#fin-income-confirm{accent-color:#1e9cff!important}
+/* Preserve light-image thumbnails, never recolor uploaded Amazon screenshots themselves. */
+#fin-income-image-list img{filter:none!important}
+@media(max-width:430px){
+ #flex-income-card .fin-review-row>summary{font-size:13px!important;line-height:1.5;overflow-wrap:anywhere}
+ #flex-income-card .fin-review-row .fin-inputs>div{min-width:0}
+}
+</style>
+</head><body><header id="neon-hero"><div class="wrap"><div class="neon-headrow"><div class="neon-brand-mark" aria-hidden="true">◈</div><div><div class="neon-kicker">AMAZON FLEX · PLANNER</div><h1>Driver Tracker <span class="neon-edition">NEON</span></h1><div class="sub">Thu nhập · Rolling 7 Days · Healthcare Subsidy</div></div></div></div></header>
 <nav id="neon-topnav" aria-label="Đi đến các phần của ứng dụng"><a href="#flex-income-card">◫ Thu nhập</a><a href="#neon-rolling">◷ Rolling</a><a href="#flex-health-card">♡ Healthcare</a><a href="#flex-upgrade">▣ Upload</a><a href="#neon-backup">↧ Sao lưu</a></nav><main>
 <section class="card" id="neon-rolling"><div class="grid"><div><label for="day">Ngày cần kiểm tra</label><div class="weekday-check-date"><span id="weekday-check-label" aria-hidden="true"></span><input id="day" type="date" aria-label="Ngày cần kiểm tra"></div><div class="auto-today-row"><label class="auto-today-text" for="auto-today">Auto Today <span id="auto-today-state">ON</span></label><label class="auto-today-switch"><input id="auto-today" type="checkbox" checked aria-label="Tự động chọn hôm nay"><span class="auto-today-track"></span></label></div></div><div><label for="cap">Giới hạn rolling (giờ)</label><input id="cap" type="number" min="1" max="168" step="0.5" value="40"></div></div><div class="grid" style="margin-top:12px"><div class="metric"><small>Đã chạy trong 7 ngày</small><strong id="used">–</strong></div><div class="metric"><small>Còn trước reserve hôm nay</small><strong class="green" id="free">–</strong></div><div class="metric"><small>Reserve hôm nay</small><strong id="reserved">–</strong></div><div class="metric"><small>Còn cho IO hôm nay</small><strong class="green" id="io">–</strong></div></div><div class="bar"><span id="bar"></span></div><div class="muted" id="window"></div><div class="hint" id="warning" style="margin-top:12px"></div></section>
 <section class="card"><h2>Ngày hôm sau được thêm bao nhiêu giờ?</h2><div class="grid"><div class="metric"><small>Giờ của ngày cũ rơi khỏi rolling</small><strong id="released">–</strong></div><div class="metric"><small>Ngày mai còn cho IO</small><strong class="green" id="tomorrow">–</strong></div></div><p class="note" id="explain"></p><div class="controls"><button id="next">Xem ngày mai →</button><button class="secondary" id="prev">← Ngày trước</button><button class="secondary" id="today">Hôm nay</button></div></section>
