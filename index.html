@@ -1,0 +1,1597 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#061326"><title>Flex Planner Neon · Independent</title><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><style>
+:root{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#17324a;background:#edf4f8}*{box-sizing:border-box}body{margin:0}header{background:linear-gradient(125deg,#0c385c,#117ba0);color:white;padding:28px 18px 24px}main{max-width:790px;margin:auto;padding:16px 14px 50px}.wrap{max-width:790px;margin:auto}h1{font-size:25px;margin:4px 0 6px}h2{font-size:17px;margin:0 0 12px}.sub{opacity:.85;font-size:13px;line-height:1.5}.card{background:white;border-radius:17px;padding:17px;margin:0 0 14px;box-shadow:0 2px 10px #0b36500e}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.metric{background:#eff6fb;border-radius:12px;padding:13px}.metric small{display:block;color:#52697b;margin-bottom:6px}.metric strong{font-size:24px;letter-spacing:-.7px}.green{color:#087c64}.red{color:#bb3b32}.muted{font-size:12px;color:#64798b;line-height:1.5}.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}label{font-size:12px;font-weight:650;display:block;margin-bottom:5px}input,select{width:100%;font:inherit;border:1px solid #c8d9e4;border-radius:9px;padding:10px;background:white;color:#17324a}input[type=date]{min-width:0}button{border:0;border-radius:10px;background:#087aa4;color:white;padding:11px 13px;font-weight:700;cursor:pointer}button.secondary{background:#e6f0f5;color:#17425e}button.danger{background:#fbe8e7;color:#a02d27}.row{display:grid;grid-template-columns:1.1fr 1fr 1fr auto;gap:8px;align-items:end;margin:9px 0}.row button{padding:10px}.smalltitle{font-weight:700;font-size:13px;margin:12px 0 8px}.forecast{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px 5px;border-bottom:1px solid #e5edf2;text-align:right}th:first-child,td:first-child{text-align:left}th{font-size:11px;color:#52697b}.pill{display:inline-block;padding:4px 8px;border-radius:50px;background:#e4f5ee;color:#087c64;font-size:11px;font-weight:700}.warn{background:#fff0d7;color:#895c00}.bar{height:10px;background:#e7eef3;border-radius:20px;overflow:hidden;margin:12px 0}.bar span{display:block;height:100%;background:#0781a8;border-radius:20px}.hint{background:#fff8e9;border-left:3px solid #e6a533;padding:10px 12px;border-radius:8px;font-size:12px;line-height:1.55}.note{font-size:12px;color:#536a7d;line-height:1.6}footer{font-size:11px;color:#607789;text-align:center;margin-top:15px}@media(max-width:420px){.row{grid-template-columns:1.1fr .9fr .9fr auto;gap:5px}.row input{padding:8px 5px;font-size:13px}.row button{padding:9px 8px}.forecast{font-size:11px}th,td{padding:9px 3px}.metric strong{font-size:21px}}
+
+/* Responsive layout fixes for Safari on iPhone and Android browsers */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;width:100%;overflow-x:hidden}
+body{width:100%;max-width:100%;overflow-x:hidden}
+main,header,.wrap,.card,.grid,.metric,.grid>div{min-width:0;max-width:100%}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:stretch}
+.grid>div{min-width:0}
+.metric{min-width:0;width:100%;height:100%;display:flex;flex-direction:column;justify-content:flex-start;overflow-wrap:anywhere;word-break:normal}
+.metric small{min-width:0;line-height:1.35;min-height:2.7em;overflow-wrap:break-word}
+.metric strong{display:block;max-width:100%;font-variant-numeric:tabular-nums;white-space:nowrap;font-size:clamp(19px,5.1vw,24px);letter-spacing:-.5px}
+input,select,button{max-width:100%;min-width:0}
+.row{min-width:0}
+@media(max-width:420px){main{padding:12px 10px 40px}.card{padding:13px;margin-bottom:12px}.grid{gap:9px}.metric{padding:11px 10px}.metric strong{font-size:clamp(18px,5vw,22px)}.metric small{font-size:12px}.row{grid-template-columns:minmax(0,1.2fr) minmax(0,.9fr) minmax(0,.9fr) auto}}
+@media(max-width:350px){.metric strong{font-size:18px}.metric{padding:10px 8px}.grid{gap:7px}}
+
+/* iPhone Safari: date inputs must shrink inside CSS Grid columns */
+.grid > div { min-width: 0; width: 100%; }
+.grid > div > input { display:block; width:100%; min-width:0; max-width:100%; box-sizing:border-box; }
+.grid input[type="date"] { -webkit-appearance:none; appearance:none; min-width:0; width:100%; max-width:100%; font-size:16px; padding:10px 8px; }
+.grid input[type="number"] { min-width:0; width:100%; font-size:16px; }
+@media (max-width: 420px) { .grid > div > label { overflow-wrap:anywhere; } }
+
+/* iPhone-only entry rows: compact, non-overlapping grid */
+#entries .row{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.8fr) minmax(0,.8fr) 34px;gap:7px;align-items:center;width:100%;min-width:0}
+#entries .row > input{display:block;width:100%;min-width:0;max-width:100%;box-sizing:border-box;font-size:16px;padding:10px 7px;height:43px}
+#entries .row > input[type=date]{-webkit-appearance:none;appearance:none;min-width:0;max-width:100%;font-size:13px;padding:8px 3px;letter-spacing:-.3px}
+#entries .row > button{width:34px;min-width:34px;max-width:34px;height:43px;padding:0;display:grid;place-items:center}
+@media(max-width:440px){#entries .row{grid-template-columns:minmax(0,1.35fr) minmax(0,.78fr) minmax(0,.78fr) 30px;gap:5px}#entries .row > input{font-size:14px;padding:8px 5px}#entries .row > input[type=date]{font-size:12px;padding:8px 1px}#entries .row > button{width:30px;min-width:30px;max-width:30px}}
+@media(max-width:360px){#entries .row{grid-template-columns:minmax(0,1.3fr) minmax(0,.8fr) minmax(0,.8fr) 28px;gap:4px}#entries .row > input[type=date]{font-size:11px}#entries .row > button{width:28px;min-width:28px;max-width:28px}}
+
+/* iPhone: all four controls on ONE line, like Samsung */
+@media(max-width:600px){
+ #entries .row{display:grid;grid-template-columns:minmax(0,1.32fr) minmax(0,1fr) minmax(0,1fr) 30px;grid-template-rows:44px;gap:5px;align-items:center;padding:3px 0;margin:7px 0;border:0;max-width:100%}
+ #entries .row > input{grid-column:auto;grid-row:auto;width:100%;min-width:0;max-width:100%;height:44px;font-size:14px;padding:8px 5px;line-height:1.2}
+ #entries .row > input[type=date]{grid-column:auto;grid-row:auto;min-width:0;max-width:100%;width:100%;font-size:12px;padding:6px 2px;letter-spacing:-.4px;text-align:left;overflow:hidden;-webkit-appearance:none;appearance:none}
+ #entries .row > input[type=date]::-webkit-date-and-time-value{min-width:0;text-align:left}
+ #entries .row > input[type=date]::-webkit-datetime-edit{min-width:0;padding:0}
+ #entries .row > input[type=date]::-webkit-calendar-picker-indicator{margin:0;padding:0;width:13px;opacity:.8}
+ #entries .row > button{grid-column:auto;grid-row:auto;align-self:center;height:44px;width:30px;min-width:30px;max-width:30px;padding:0}
+}
+@media(max-width:375px){#entries .row{grid-template-columns:minmax(0,1.35fr) minmax(0,.9fr) minmax(0,.9fr) 26px;gap:4px}#entries .row > input[type=date]{font-size:11px}#entries .row > button{width:26px;min-width:26px;max-width:26px}}
+
+/* iPhone alignment refinement: consistent centered dates and no wrapping */
+#entries .row > .date-cell {position:relative;min-width:0;height:44px;border:1px solid #c8d9e4;border-radius:9px;background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+#entries .date-cell .date-label {pointer-events:none;display:block;text-align:center;white-space:nowrap;font-size:clamp(10px,2.8vw,13px);font-variant-numeric:tabular-nums;letter-spacing:-.25px;padding:0 2px;width:100%;}
+#entries .date-cell input[type=date] {position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:2;padding:0;border:0;}
+#entries .row > input:not([type=date]) {text-align:center;font-variant-numeric:tabular-nums;}
+.forecast{table-layout:fixed;width:100%;font-variant-numeric:tabular-nums;}
+.forecast th,.forecast td{white-space:nowrap;word-break:normal;overflow-wrap:normal;text-align:center;padding:9px 2px;}
+.forecast th:first-child,.forecast td:first-child{text-align:center;width:14%;}
+.forecast th:nth-child(2),.forecast td:nth-child(2){width:20%;}
+.forecast th:nth-child(3),.forecast td:nth-child(3){width:20%;}
+.forecast th:nth-child(4),.forecast td:nth-child(4){width:19%;}
+.forecast th:nth-child(5),.forecast td:nth-child(5){width:27%;}
+@media(max-width:600px){.forecast{font-size:clamp(10px,2.8vw,12px)}.forecast th{font-size:clamp(9px,2.45vw,11px);line-height:1.25;white-space:normal}.forecast td{font-size:clamp(10px,2.7vw,12px)} }
+
+
+/* Additive upgrade styles */
+.flex-tools{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.flex-tools button{flex:1;min-width:115px}
+.flex-panel{border:1px solid #d9e7ef;border-radius:12px;padding:12px;margin:12px 0;background:#f8fbfd}
+.flex-panel[hidden]{display:none!important}.flex-panel summary{cursor:pointer;font-weight:700}
+.flex-item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid #e5edf2;font-size:13px}
+.flex-item:last-child{border:0}.flex-item button{flex-shrink:0;padding:7px 9px}.flex-item small{display:block;color:#607789;margin-top:3px}
+.flex-review{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr) minmax(0,.8fr) minmax(0,.9fr) auto;gap:5px;align-items:end;padding:10px 0;border-bottom:1px solid #e5edf2}
+.flex-review input,.flex-review select{font-size:13px;padding:8px 4px}.flex-review label{font-size:11px}
+.flex-review button{padding:8px}.flex-status{font-size:12px;color:#52697b;line-height:1.5;margin:8px 0}
+.flex-reserve-day{border:1px solid #e5edf2;border-radius:12px;padding:12px;margin:10px 0}.flex-reserve-heading{font-weight:750;margin-bottom:8px}.flex-reserve-total{display:flex;justify-content:space-between;border-top:1px solid #e5edf2;margin-top:8px;padding-top:10px;font-weight:750}.flex-history-total{background:#eff6fb;border-radius:12px;padding:12px;margin:12px 0;font-weight:750}.flex-history-day{margin:7px 0;padding:10px;background:#eff6fb;border-radius:9px}.flex-history-day summary{font-size:13px;font-weight:700}
+@media(max-width:500px){.flex-review{grid-template-columns:repeat(2,minmax(0,1fr))}.flex-review .flex-date{grid-column:1/-1}.flex-review .flex-remove{grid-column:1/-1}.flex-review input,.flex-review select{font-size:16px}}
+
+
+/* iOS Safari: input text below 16px triggers automatic page zoom.
+   Keep pinch-to-zoom available and preserve the original one-line row layout. */
+@media (hover:none) and (pointer:coarse) {
+  input:not([type="checkbox"]):not([type="radio"]), select, textarea {font-size:16px !important;}
+  #entries .row > input {font-size:16px !important; min-width:0;}
+  #entries .row > input[type="date"] {font-size:16px !important;}
+}
+
+/* Rolling OUT: iPhone layout is otherwise unchanged. */
+#flex-out-controls{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:12px 0 6px;font-size:12px}
+#flex-out-controls label{display:flex;align-items:center;gap:6px;margin:0;font-size:12px;cursor:pointer}
+#flex-out-controls input[type="checkbox"]{width:auto;accent-color:#087aa4}
+#flex-out-count{color:#a02d27;font-weight:700}
+#entries .row.flex-out-row{position:relative;margin-top:23px}
+#entries .row.flex-out-row::before{content:'OUT';position:absolute;top:-19px;left:0;font-size:10px;font-weight:800;color:#b7352e}
+#entries .row.flex-out-row .date-cell{border-color:#d65b55;background:#fff0ef}
+#entries .row.flex-out-row .date-label{color:#b7352e;font-weight:800}
+/* OCR review: 1 field per row on narrow mobile screens; never overlap native time inputs. */
+.flex-review{grid-template-columns:repeat(2,minmax(0,1fr))!important;min-width:0}
+.flex-review>div{min-width:0}.flex-review .flex-date{grid-column:1/-1}
+.flex-review input,.flex-review select{display:block;width:100%;min-width:0;max-width:100%;box-sizing:border-box;font-size:16px!important}
+.flex-review .flex-remove{grid-column:1/-1;width:100%}
+@media(max-width:380px){.flex-review{grid-template-columns:minmax(0,1fr)!important}.flex-review .flex-date,.flex-review .flex-remove{grid-column:1}}
+
+/* iPhone fix: month picker must stay inside history panel */
+#flex-history-panel{overflow:hidden;}
+#flex-history-panel label{display:block;max-width:100%;}
+#flex-history-panel input[type=month],
+#flex-history-panel select{display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;}
+#flex-month{-webkit-appearance:none;appearance:none;display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;font-size:16px;line-height:1.2;padding:12px 14px;border:1px solid #c8d9e4;border-radius:12px;background:#fff;overflow:hidden;}
+@supports (-webkit-touch-callout:none){
+  #flex-month{width:calc(100% - 2px);}
+}
+@media(max-width:430px){
+  #flex-month{font-size:15px;padding:11px 12px;}
+  #flex-history-panel{padding:12px 10px;}
+}
+
+
+/* iPhone-only OCR review: separate native start/end time controls safely. */
+#flex-review-list .flex-review{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  column-gap:14px!important;
+  row-gap:10px!important;
+  width:100%;min-width:0;
+}
+#flex-review-list .flex-review > div{
+  min-width:0!important;
+  max-width:100%;
+  width:100%;
+  box-sizing:border-box;
+}
+#flex-review-list .flex-review input[type="time"]{
+  display:block;
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  margin:0!important;
+  padding:10px 8px!important;
+  border:1px solid #c8d9e4;
+  border-radius:9px;
+  background:#fff;
+  font-size:16px!important;
+  font-variant-numeric:tabular-nums;
+  line-height:1.25;
+  height:46px;
+  -webkit-appearance:none;
+  appearance:none;
+}
+#flex-review-list .flex-review .flex-date,
+#flex-review-list .flex-review .flex-remove{grid-column:1/-1!important}
+/* Safari time controls have intrinsic content widths; stack on narrow iPhones. */
+@media(max-width:430px){
+  #flex-review-list .flex-review{
+    grid-template-columns:minmax(0,1fr)!important;
+    column-gap:0!important;
+  }
+  #flex-review-list .flex-review > div,
+  #flex-review-list .flex-review .flex-date,
+  #flex-review-list .flex-review .flex-remove{grid-column:1!important}
+  #flex-review-list .flex-review input[type="time"]{
+    width:100%!important;
+    text-align:center;
+  }
+}
+
+</style><style id="auto-today-styles">.auto-today-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:9px;min-height:30px}.auto-today-text{display:flex;align-items:center;gap:7px;margin:0;font-size:12px;font-weight:600;white-space:nowrap}.auto-today-text span{font-size:10px;opacity:.7}.auto-today-switch{position:relative;display:inline-block;width:43px;height:25px;flex:none}.auto-today-switch input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}.auto-today-track{display:block;width:43px;height:25px;background:#a6adb5;border-radius:20px;transition:background .2s;pointer-events:none}.auto-today-track:after{content:"";position:absolute;top:3px;left:3px;width:19px;height:19px;background:white;border-radius:50%;box-shadow:0 1px 3px #0003;transition:transform .2s}#auto-today:checked+.auto-today-track{background:#30c76a}#auto-today:checked+.auto-today-track:after{transform:translateX(18px)}#auto-today:focus-visible+.auto-today-track{outline:2px solid #2563eb;outline-offset:3px}</style>
+<style id="date-picker-ui-patch">
+
+/* Add day: a native date picker covers the existing button on touch devices.
+   Keep the original button visually unchanged; no text prompt is used. */
+.flex-add-day-wrap{position:relative;display:inline-flex;flex:0 0 auto;max-width:100%;min-width:0}
+.flex-add-day-wrap>button{display:block;white-space:nowrap}
+#flex-add-date-picker{position:absolute;inset:0;z-index:2;opacity:0;width:100%;height:100%;min-width:0;max-width:100%;padding:0;margin:0;border:0;cursor:pointer;font-size:16px!important;box-sizing:border-box}
+
+/* iPhone only: match the date text size to both hours columns. */
+#entries .date-cell .date-label{font-size:16px!important;letter-spacing:-.25px!important;font-variant-numeric:tabular-nums!important;padding:0 1px!important;line-height:1.2}
+/* iPhone only: keep the month picker inside its rounded history container. */
+#flex-history-panel{min-width:0!important;max-width:100%!important;box-sizing:border-box!important;overflow:hidden}
+#flex-month{display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important;font-size:16px!important;overflow:hidden!important}
+#flex-month::-webkit-date-and-time-value{min-width:0;text-align:left}
+#flex-month::-webkit-datetime-edit{min-width:0;max-width:100%;padding:0}
+
+
+/* iPhone fix: month picker must stay inside history panel */
+#flex-history-panel{overflow:hidden;}
+#flex-history-panel label{display:block;max-width:100%;}
+#flex-history-panel input[type=month],
+#flex-history-panel select{display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;}
+#flex-month{-webkit-appearance:none;appearance:none;display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;font-size:16px;line-height:1.2;padding:12px 14px;border:1px solid #c8d9e4;border-radius:12px;background:#fff;overflow:hidden;}
+@supports (-webkit-touch-callout:none){
+  #flex-month{width:calc(100% - 2px);}
+}
+@media(max-width:430px){
+  #flex-month{font-size:15px;padding:11px 12px;}
+  #flex-history-panel{padding:12px 10px;}
+}
+
+</style>
+<style id="weekday-uniform-ui">
+
+/* Weekday labels are display-only; all stored dates remain ISO YYYY-MM-DD. */
+.weekday-check-date {position:relative;min-width:0;width:100%;height:64px;border:1px solid #c8d9e4;border-radius:9px;background:#fff;display:flex;align-items:center;overflow:hidden;padding:5px 24px 5px 6px;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2317324a' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='16' rx='2'/%3E%3Cpath d='M7 3v4M17 3v4M3 10h18'/%3E%3C/svg%3E");background-size:15px 15px;background-position:right 5px center;background-repeat:no-repeat;}
+#flex-history-panel #flex-month, #flex-history-panel #flex-date-filter{font-size:16px!important;}
+#weekday-check-label{display:block;pointer-events:none;min-width:0;font-size:16px!important;line-height:1.22;white-space:pre-line;font-variant-numeric:tabular-nums;font-weight:400;}
+.weekday-check-date #day{position:absolute;inset:0;width:100%;height:100%;opacity:0;z-index:2;cursor:pointer;min-width:0;max-width:100%;padding:0;border:0;}
+#entries .row {min-height:64px;align-items:center;}
+#entries .row > .samsung-date-cell, #entries .row > .date-cell{height:64px!important;min-height:64px!important;max-height:none!important;min-width:0!important;align-items:center!important;justify-content:flex-start!important;}
+#entries .row > .samsung-date-cell .samsung-date-label, #entries .row > .date-cell .date-label{display:block!important;white-space:pre-line!important;font-size:16px!important;letter-spacing:0!important;line-height:1.23!important;text-align:left!important;font-weight:400!important;overflow:visible!important;max-width:100%!important;padding:0!important;font-variant-numeric:tabular-nums!important;}
+#entries .row > input:not([type=date]){height:64px!important;min-height:64px!important;font-size:16px!important;font-variant-numeric:tabular-nums!important;}
+#entries .row > button{height:64px!important;min-height:64px!important;align-self:center!important;}
+@media(max-width:600px){#entries .row{grid-template-rows:64px!important;min-height:64px!important}}
+@media(max-width:365px){
+ #entries .row > .samsung-date-cell{padding-right:15px!important;background-size:12px 12px!important;background-position:right 2px center!important;}
+ #entries .row > .date-cell .date-label{font-size:16px!important;}
+}
+.forecast td.weekday-forecast-date{white-space:normal!important;line-height:1.2!important;vertical-align:middle;}
+.weekday-forecast-date span{display:block;white-space:nowrap;font-size:inherit!important;line-height:1.2;letter-spacing:0;}
+/* OCR date review: retain a tappable native date input with a clear weekday label. */
+.flex-review .flex-date{position:relative;min-width:0;}
+.flex-review .flex-date .weekday-date-preview{display:flex;align-items:center;min-width:0;width:100%;min-height:44px;border:1px solid #c8d9e4;border-radius:9px;padding:8px 9px;background:#fff;font-size:16px!important;line-height:1.25;white-space:normal;overflow-wrap:normal;font-variant-numeric:tabular-nums;}
+.flex-review .flex-date input[type=date]{position:absolute;left:0;right:0;bottom:0;width:100%;height:44px;opacity:0;z-index:2;cursor:pointer;max-width:100%;}
+
+@media(max-width:600px){
+ #entries .row{grid-template-columns:minmax(0,1.58fr) minmax(0,.90fr) minmax(0,.90fr) 30px!important;gap:4px!important;}
+ #entries .row > .date-cell{padding:3px 4px!important;}
+ #entries .row > .date-cell .date-label{font-size:16px!important;}
+ #entries .row > input:not([type=date]){font-size:16px!important;padding:7px 2px!important;text-align:center!important;}
+}
+@media(max-width:365px){
+ #entries .row{grid-template-columns:minmax(0,1.62fr) minmax(0,.9fr) minmax(0,.9fr) 26px!important;gap:3px!important;}
+}
+
+/* Single-line weekday layout: equal font size for dates and times. */
+:root{--weekday-equal-font:clamp(14px,4vw,16px);}
+.weekday-check-date{
+  height:46px!important;min-height:46px!important;
+  padding:3px 21px 3px 5px!important;
+  background-size:13px 13px!important;
+  background-position:right 4px center!important;
+}
+#weekday-check-label{
+  white-space:nowrap!important;
+  font-size:var(--weekday-equal-font)!important;
+  line-height:1.2!important;
+  letter-spacing:-.35px!important;
+  overflow:visible!important;
+}
+main > section.card:first-of-type > .grid:first-child{
+  grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)!important;
+}
+#entries .row{
+  grid-template-rows:46px!important;
+  min-height:46px!important;
+  align-items:center!important;
+}
+#entries .row > .samsung-date-cell,
+#entries .row > .date-cell{
+  height:46px!important;min-height:46px!important;
+  max-height:46px!important;
+  padding:0 3px!important;
+  display:flex!important;
+  justify-content:flex-start!important;
+  align-items:center!important;
+  overflow:hidden!important;
+}
+#entries .row > .samsung-date-cell{
+  background-image:none!important;
+}
+#entries .row > .samsung-date-cell .samsung-date-label,
+#entries .row > .date-cell .date-label{
+  font-size:var(--weekday-equal-font)!important;
+  white-space:nowrap!important;
+  letter-spacing:-.3px!important;
+  line-height:1.2!important;
+  max-width:100%!important;
+  overflow:visible!important;
+  text-align:left!important;
+  font-weight:400!important;
+}
+#entries .row > input:not([type=date]){
+  font-size:var(--weekday-equal-font)!important;
+  height:46px!important;min-height:46px!important;
+  padding:6px 2px!important;
+  line-height:1.2!important;
+}
+#entries .row > button{
+  height:46px!important;min-height:46px!important;
+}
+@media(max-width:600px){
+ #entries .row{
+   grid-template-columns:minmax(0,2.12fr) minmax(0,.68fr) minmax(0,.68fr) 26px!important;
+   grid-template-rows:46px!important;
+   gap:4px!important;
+ }
+ #entries .row > .samsung-date-cell,
+ #entries .row > .date-cell{padding:0 2px!important;}
+ #entries .row > button{width:26px!important;min-width:26px!important;max-width:26px!important;}
+}
+@media(max-width:350px){
+ #entries .row{gap:3px!important;grid-template-columns:minmax(0,2.18fr) minmax(0,.65fr) minmax(0,.65fr) 25px!important;}
+ #entries .row > button{width:25px!important;min-width:25px!important;max-width:25px!important;}
+}
+.forecast td.weekday-forecast-date{
+  white-space:nowrap!important;
+  line-height:1.2!important;
+  overflow:visible!important;
+}
+.forecast th:first-child,.forecast td:first-child{width:25%!important;}
+.forecast th:nth-child(2),.forecast td:nth-child(2){width:17%!important;}
+.forecast th:nth-child(3),.forecast td:nth-child(3){width:17%!important;}
+.forecast th:nth-child(4),.forecast td:nth-child(4){width:17%!important;}
+.forecast th:nth-child(5),.forecast td:nth-child(5){width:24%!important;}
+.flex-review .flex-date .weekday-date-preview{
+  white-space:nowrap!important;
+  font-size:var(--weekday-equal-font)!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis;
+}
+
+</style>
+<style>
+/* Reserve status actions: wrap cleanly on narrow phones without changing global controls. */
+.flex-reserve-actions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.flex-reserve-actions button{font-size:12px;padding:8px 9px;white-space:normal}
+.flex-reserve-day-actions{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0}
+.flex-reserve-day-actions button{font-size:12px;padding:9px 10px}
+@media(max-width:460px){#flex-reserve-list .flex-item{align-items:flex-start}.flex-reserve-actions{justify-content:flex-start}}
+</style>
+<style>
+/* End-of-day reconciliation; device layout remains untouched. */
+#flex-earnings-close{margin:12px 0;padding:13px;border:1px solid #b9d9e5;border-radius:12px;background:#f0f8fc;color:#193953}
+#flex-earnings-close[hidden]{display:none!important}
+.flex-day-close-title{font-weight:800;font-size:17px;margin-bottom:8px}
+.flex-day-close-preview{display:grid;gap:7px;font-size:14px}
+.flex-day-close-preview .flex-close-day{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #d8e7ec;flex-wrap:wrap}
+.flex-close-check{display:flex!important;align-items:flex-start;gap:10px;margin:12px 0 0;line-height:1.55;font-weight:650}
+.flex-close-check input{flex:none;width:20px;height:20px;margin:3px 0 0}
+#flex-add-images,#flex-add-block{min-width:0;white-space:normal}
+</style>
+<style id="flex-neon-independent-theme">
+/* VISUAL-ONLY SKIN: Flex Planner Neon. Numeric/render/OCR/backup logic stays untouched. */
+:root{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#f2f8ff;background:#06101e;color-scheme:dark;--neon-bg:#06101e;--neon-panel:#0a1b31;--neon-edge:#1c395b;--neon-muted:#91a8c5;--neon-blue:#1996ff;--neon-teal:#38e1cc;--neon-green:#43e39d;--neon-purple:#bd7cff;--neon-orange:#ffbf56}
+html{scroll-behavior:smooth;scroll-padding-top:80px;background:#06101e}
+body{background:radial-gradient(ellipse 440px 600px at 95% -140px,#124b91 0,transparent 85%),linear-gradient(#04101e,#071424 38%,#030b16);color:#f2f8ff;min-height:100vh}
+header#neon-hero{background:linear-gradient(118deg,#081b32,#092a4d 60%,#0b2a42);border-bottom:1px solid #1d4b74;padding:24px 17px 18px;position:relative;overflow:hidden}
+header#neon-hero:after{content:"";position:absolute;right:-35px;top:-80px;width:220px;height:220px;background:radial-gradient(circle,#1b82f638,transparent 72%);pointer-events:none}
+.neon-headrow{display:flex;align-items:center;gap:13px;position:relative;z-index:1}.neon-brand-mark{width:51px;height:51px;flex:0 0 51px;border:1px solid #257bd2;border-radius:17px;display:grid;place-items:center;font-weight:900;font-size:31px;color:#b2e5ff;background:linear-gradient(135deg,#0e6ace,#092b51);box-shadow:0 0 22px #1688ff38}.neon-kicker{font-size:10px;letter-spacing:2px;color:#81bce9;font-weight:800}#neon-hero h1{font-size:clamp(22px,6vw,30px);margin:3px 0 2px;line-height:1.18;letter-spacing:-.7px}.neon-edition{font-size:10px;vertical-align:middle;letter-spacing:1.2px;border-radius:999px;border:1px solid #2462ad;color:#a3d7ff;padding:4px 6px;background:#0b2b54;margin-left:3px}#neon-hero .sub{color:#b9cbdf;font-size:12px;opacity:1}
+#neon-topnav{position:sticky;top:0;z-index:40;display:flex;overflow:auto;gap:6px;padding:11px max(12px,calc((100vw - 780px)/2));background:#041020f2;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid #1c3b60;scrollbar-width:none}#neon-topnav::-webkit-scrollbar{display:none}#neon-topnav a{white-space:nowrap;color:#c8d9f1;border:1px solid #203d61;background:linear-gradient(180deg,#142b49,#0a1b31);border-radius:11px;padding:9px 11px;font-size:12px;font-weight:750;text-decoration:none;min-height:36px}#neon-topnav a:first-child{color:white;background:linear-gradient(135deg,#1372ce,#0b4f9a);border-color:#2c91ea}
+main{max-width:790px;margin:auto;padding:16px 11px 12px}
+.card{background:linear-gradient(150deg,#0d2039,#08172b 85%);color:#f1f7ff;border:1px solid #183553;border-radius:19px;padding:16px;margin:0 0 13px;box-shadow:0 8px 25px #0004, inset 0 1px #fff08;overflow:visible}
+h2{color:#f2f8ff;font-weight:800;font-size:clamp(17px,4.5vw,21px);line-height:1.35;letter-spacing:-.35px}h3{color:#f1f7ff}.card>h2:before{content:"◈";margin-right:9px;color:#4ba7ff;font-size:17px}#neon-rolling>h2{display:none}
+.card:target{outline:2px solid #1879d9;outline-offset:1px}
+.metric,.fin-tile{background:linear-gradient(136deg,#102b4a,#091b34 88%)!important;border:1px solid #204062!important;border-radius:15px!important;box-shadow:inset 0 1px #ffffff0a;min-width:0;overflow:hidden}
+.metric{padding:14px 12px!important;min-height:120px}.metric small,.fin-tile small{color:#a1b6cf!important;line-height:1.35!important;font-weight:560;font-size:12px!important}.metric strong,.fin-tile strong{font-variant-numeric:tabular-nums;font-weight:800;line-height:1.22;color:#f4faff;letter-spacing:-.8px}.metric strong{font-size:clamp(22px,6vw,29px)!important;margin-top:auto}.metric .green, .metric strong.green{color:#49e6a5!important}
+#neon-rolling .grid:nth-of-type(2) .metric:nth-child(1){background:linear-gradient(135deg,#17265a,#0d2043)!important;border-color:#344b93!important}#neon-rolling .grid:nth-of-type(2) .metric:nth-child(1) strong{color:#c18aff!important}
+#neon-rolling .grid:nth-of-type(2) .metric:nth-child(2),#neon-rolling .grid:nth-of-type(2) .metric:nth-child(4){background:linear-gradient(135deg,#103d42,#0a2737)!important;border-color:#1b655d!important}
+.bar{background:#19314c!important;border-radius:100px!important;height:9px!important}.bar span{background:linear-gradient(90deg,#24c6ec,#358cff,#b36cff)!important;box-shadow:0 0 12px #428eff52}
+label,.smalltitle{color:#cbdcf1!important}input,select,textarea{background:#08182d!important;color:#f4f8ff!important;border:1px solid #335574!important;border-radius:10px!important;min-width:0}input::placeholder,textarea::placeholder{color:#6888aa}input:focus,select:focus,textarea:focus{outline:2px solid #178be8;outline-offset:1px}input[type="checkbox"]{accent-color:#159afa}
+.weekday-check-date,.date-cell{border-color:#325677!important;background:#091c34!important}#entries .date-cell .date-label{color:#e7f3ff!important}#entries .row.flex-out-row .date-cell{background:#33232f!important;border-color:#8f4657!important}#entries .row.flex-out-row .date-label{color:#ffb7b7!important}
+button{background:linear-gradient(135deg,#0871d8,#049fd2);color:#fff;box-shadow:0 2px 0 #040e1d35;border:1px solid #298ce888!important;border-radius:11px!important;padding:11px 12px;min-height:40px}button:hover{filter:brightness(1.12)}button.secondary{background:linear-gradient(130deg,#172e4e,#11243e);color:#dce9ff;border-color:#2d5076!important}button.danger{background:linear-gradient(130deg,#532731,#38202a);color:#ffafaf;border-color:#88414d!important}
+.note,.muted,.sub,.fin-mini,.fin-status,footer{color:#93abc7!important;line-height:1.6!important}.hint{background:linear-gradient(105deg,#38291d,#242028)!important;border:1px solid #745632!important;border-left:3px solid #ffad3b!important;color:#ffdfad!important}
+.forecast{color:#d9e8f8}.forecast th, .forecast td{border-color:#253d59!important}.forecast th{color:#90b0d0!important}.forecast tbody tr:nth-child(even){background:#0e244030}.forecast td:nth-child(4){font-weight:800;color:#40e1a0}
+.flex-panel,.fin-goal,.flex-reserve-day,.flex-history-day,.flex-history-total,.fin-ref-row,.fin-audit-check{background:#0b213b!important;border:1px solid #284565!important;color:#dceafd!important;border-radius:13px!important}details>summary{color:#eaf5ff;cursor:pointer}details>summary::marker{color:#31b6ff!important}details[open]>summary{margin-bottom:10px}.flex-panel b{color:#eaf5ff}.flex-panel small{color:#9bb2d0!important}.flex-item,.flex-review{border-color:#264565!important}.flex-history-day{background:#102743!important}.flex-status{color:#9cb5d4!important}
+#flex-income-card>details>summary,#flex-health-card>details>summary{font-size:clamp(17px,4.8vw,22px);font-weight:850;letter-spacing:-.45px;color:#f6f9ff;line-height:1.4}#flex-income-card>details>summary:before{content:"▥";margin-right:9px;color:#3ce1c7}#flex-health-card>details>summary:before{content:"♥";margin-right:9px;color:#35d4bf}
+#flex-income-card .fin-cols,#flex-health-card .fin-cols{gap:10px}.fin-tile{padding:13px 11px!important;display:flex;flex-direction:column;gap:8px;min-height:108px}#flex-income-card .fin-tile{background:linear-gradient(140deg,#101f35,#0c1a30 90%)!important;border:1px solid #31425a!important}#flex-income-card .fin-tile:nth-child(1){background:linear-gradient(135deg,#30271d,#171c2e)!important;border-color:#665037!important}#flex-income-card .fin-tile:nth-child(2){background:linear-gradient(135deg,#0b393f,#0b2236)!important;border-color:#1a615d!important}#flex-income-card .fin-tile:nth-child(3){background:linear-gradient(135deg,#123a3a,#0a2635)!important;border-color:#155c5c!important}#flex-income-card .fin-tile:nth-child(4){background:linear-gradient(135deg,#171c43,#0e203b)!important;border-color:#374f8f!important}#flex-income-card .fin-tile:nth-child(5){background:linear-gradient(135deg,#2d261e,#121c32)!important;border-color:#735332!important}#flex-income-card .fin-tile:nth-child(7){grid-column:1/-1!important;min-height:92px;background:linear-gradient(105deg,#201c40,#0e2441)!important;border-color:#47428f!important}
+#fin-income-day{color:#fff!important}#fin-income-week,#fin-income-month{color:#4ae3a3!important}#fin-income-specials,#fin-income-rate{color:#f6f8ff!important}#fin-income-unfinished{color:#c99dff!important}#flex-income-card .fin-income-pending{color:#ffbe51!important}
+#flex-income-card .fin-month-split{gap:8px}#flex-income-card .fin-month-split .fin-base,#flex-income-card .fin-month-split .fin-base b{color:#44e29e!important}#flex-income-card .fin-month-split .fin-tips,#flex-income-card .fin-month-split .fin-tips b{color:#369fff!important}#flex-income-card .fin-month-split .fin-month-line{font-size:12px!important}#flex-income-card .fin-month-split .fin-month-line b{font-size:clamp(15px,4.2vw,22px)!important}
+#flex-income-card .fin-day-breakdown{margin-top:6px;border-radius:10px}#flex-income-card .fin-day-breakdown .fin-line:last-child{border-top:1px solid #806c503e;padding-top:10px;margin-top:6px}#fin-income-week-split{font-size:13px!important;white-space:normal;line-height:1.55;color:#9bd2dc!important}
+#flex-health-card .fin-tile:nth-child(1){background:linear-gradient(135deg,#084357,#102843)!important;border-color:#196b80!important}#flex-health-card .fin-tile:nth-child(2){background:linear-gradient(135deg,#1c2e61,#0e2441)!important;border-color:#3b58a3!important}#fin-h-confirmed{color:#50dfe5!important}#fin-h-estimated{color:#a7b8ff!important}#flex-health-card .fin-goal:nth-child(1){background:linear-gradient(140deg,#103e3f,#0b2635)!important;border-color:#2c8675!important}#flex-health-card .fin-goal:nth-child(2){background:linear-gradient(140deg,#212652,#0e2341)!important;border-color:#554caa!important}#flex-health-card .fin-good{color:#4fe3a9!important}#flex-health-card .fin-bad{color:#ffa9a9!important}#flex-health-card .fin-label{color:#acc4e2!important}
+#flex-income-card .fin-actions button,#flex-health-card .fin-actions button{flex:1 1 160px}
+#flex-income-card button,#flex-health-card button{min-height:43px}
+#flex-income-card .fin-income-days,#flex-income-card .fin-date-row{max-width:100%}
+#flex-income-card .fin-wide{grid-column:1/-1}
+#flex-income-card .fin-mini{font-size:12px!important}.neon-week-split{display:flex;justify-content:space-between;gap:5px;margin:5px 0}.neon-week-split b{font-size:clamp(12px,3.6vw,16px);font-variant-numeric:tabular-nums}.neon-base,.neon-base b{color:#44e29e!important}.neon-tips,.neon-tips b{color:#369fff!important}
+#neon-rolling{scroll-margin-top:78px}#flex-income-card,#flex-health-card,#flex-upgrade,#neon-backup{scroll-margin-top:78px}
+footer{color:#85a3be!important}
+@media(max-width:450px){main{padding:10px 8px 32px!important}.card{padding:12px 11px;margin-bottom:11px;border-radius:17px}.metric{min-height:110px;padding:12px 9px!important}.grid,.fin-cols{gap:8px!important}.fin-tile{padding:11px 9px!important}.metric strong{font-size:clamp(19px,5.5vw,26px)!important}#flex-income-card .fin-tile strong{font-size:clamp(18px,5.3vw,24px)!important}#flex-income-card .fin-month-split .fin-month-line b{font-size:clamp(14px,4.3vw,19px)!important}#flex-income-card .fin-month-split .fin-month-line{gap:4px}#neon-topnav{padding:8px}#neon-topnav a{padding:8px 10px;font-size:11px}.fin-tile small{font-size:11px!important}#flex-income-card .fin-tile:nth-child(5) small{font-size:11px!important}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style></head><body><header id="neon-hero"><div class="wrap"><div class="neon-headrow"><div class="neon-brand-mark" aria-hidden="true">◈</div><div><div class="neon-kicker">AMAZON FLEX · PLANNER</div><h1>Driver Tracker <span class="neon-edition">NEON</span></h1><div class="sub">Thu nhập · Rolling 7 Days · Healthcare Subsidy</div></div></div></div></header>
+<nav id="neon-topnav" aria-label="Đi đến các phần của ứng dụng"><a href="#flex-income-card">◫ Thu nhập</a><a href="#neon-rolling">◷ Rolling</a><a href="#flex-health-card">♡ Healthcare</a><a href="#flex-upgrade">▣ Upload</a><a href="#neon-backup">↧ Sao lưu</a></nav><main>
+<section class="card" id="neon-rolling"><div class="grid"><div><label for="day">Ngày cần kiểm tra</label><div class="weekday-check-date"><span id="weekday-check-label" aria-hidden="true"></span><input id="day" type="date" aria-label="Ngày cần kiểm tra"></div><div class="auto-today-row"><label class="auto-today-text" for="auto-today">Auto Today <span id="auto-today-state">ON</span></label><label class="auto-today-switch"><input id="auto-today" type="checkbox" checked aria-label="Tự động chọn hôm nay"><span class="auto-today-track"></span></label></div></div><div><label for="cap">Giới hạn rolling (giờ)</label><input id="cap" type="number" min="1" max="168" step="0.5" value="40"></div></div><div class="grid" style="margin-top:12px"><div class="metric"><small>Đã chạy trong 7 ngày</small><strong id="used">–</strong></div><div class="metric"><small>Còn trước reserve hôm nay</small><strong class="green" id="free">–</strong></div><div class="metric"><small>Reserve hôm nay</small><strong id="reserved">–</strong></div><div class="metric"><small>Còn cho IO hôm nay</small><strong class="green" id="io">–</strong></div></div><div class="bar"><span id="bar"></span></div><div class="muted" id="window"></div><div class="hint" id="warning" style="margin-top:12px"></div></section>
+<section class="card"><h2>Ngày hôm sau được thêm bao nhiêu giờ?</h2><div class="grid"><div class="metric"><small>Giờ của ngày cũ rơi khỏi rolling</small><strong id="released">–</strong></div><div class="metric"><small>Ngày mai còn cho IO</small><strong class="green" id="tomorrow">–</strong></div></div><p class="note" id="explain"></p><div class="controls"><button id="next">Xem ngày mai →</button><button class="secondary" id="prev">← Ngày trước</button><button class="secondary" id="today">Hôm nay</button></div></section>
+<section class="card"><h2>Nhập giờ chạy & reserve</h2><details id="flex-manual"><summary style="cursor:pointer;font-weight:700;margin-bottom:10px">Nhập / chỉnh sửa thủ công (mở khi cần)</summary><p class="note">Nhập theo dạng <b>7:46</b> (7 giờ 46 phút). Giờ thực tế và reserve phải là hai phần <b>không trùng nhau</b>. Khi hoàn thành một reserve, chuyển số giờ đó sang cột thực tế và giảm reserve còn lại về 0.</p><div class="controls"><span class="flex-add-day-wrap"><button class="secondary" id="add" type="button">+ Thêm ngày</button><input id="flex-add-date-picker" type="date" aria-label="Chọn ngày để thêm" title="Chọn ngày để thêm"></span><button class="secondary" id="seed">Khôi phục dữ liệu mẫu</button><button class="danger" id="clear">Xóa tất cả</button></div><div class="smalltitle">Ngày · Giờ đã chạy · Giờ reserve chưa chạy</div><div id="flex-out-controls"><label><input id="flex-hide-out" type="checkbox" checked> Ẩn ngày đã OUT</label><span id="flex-out-count" aria-live="polite"></span><label><input id="flex-show-all-dates" type="checkbox"> Xem tất cả ngày đã lưu</label></div><p class="muted" id="flex-auto-day-note" style="margin:4px 0 12px;font-size:12px"></p><div id="entries"></div><p class="muted">Dữ liệu được lưu tự động trên trình duyệt thiết bị này. Không cần đăng nhập.</p></details></section>
+
+<section class="card" id="flex-upgrade"><h2>Upload ảnh & Lịch sử</h2><p class="note">Upload Your Schedule để giữ giờ Reserve. Cuối ngày upload đầy đủ Earnings (Paid hoặc Tips pending), xác nhận và chốt giờ thực tế để cập nhật Rolling 7 Days. Không cần phân biệt IO và Reserve đã chạy.</p>
+<div class="flex-tools"><button id="flex-upload">📷 Upload ảnh</button><button id="flex-zero" class="secondary" title="Chỉ dùng khi cả ngày không chạy chuyến nào">Nghỉ 0h</button><button class="secondary" id="flex-history-toggle">🕘 Xem lịch sử</button></div>
+<input id="flex-images" type="file" accept="image/*" multiple hidden><p class="muted" style="margin:7px 0 0">Nghỉ 0h: chỉ dùng khi không chạy chuyến nào trong ngày. Nếu có Earnings, chỉ cần Upload ảnh.</p>
+<div id="flex-review-panel" class="flex-panel" hidden>
+  <b>Kiểm tra block trước khi lưu</b><p id="flex-ocr-status" class="flex-status" aria-live="polite"></p>
+  <div id="flex-review-list"></div>
+  <div class="controls" style="margin-top:12px"><button type="button" class="secondary" id="flex-add-images">＋ Thêm ảnh vào lần kiểm tra</button><button type="button" class="secondary" id="flex-add-block">＋ Thêm block thủ công</button></div>
+  <div id="flex-earnings-close" class="flex-day-close" hidden>
+    <div class="flex-day-close-title">Chốt Earnings cuối ngày</div>
+    <div id="flex-earnings-preview" class="flex-day-close-preview"></div>
+    <label class="flex-close-check"><input type="checkbox" id="flex-earnings-confirm"> Tôi đã upload ĐẦY ĐỦ các chuyến Earnings của những ngày được liệt kê ở trên và kiểm tra lại ngày, giờ từng block.</label>
+    <p class="muted" style="margin:6px 0 0">Chỉ những ngày Earnings ở trên mới được chốt. Giờ Completed được <b>thay bằng tổng Earnings</b>, Reserve của đúng ngày về 0; Reserve ngày khác giữ nguyên. Nếu thiếu ảnh, bấm “Thêm ảnh” trước khi chốt.</p>
+  </div>
+  <div class="controls" style="margin-top:12px"><button type="button" id="flex-save-blocks">Lưu / chốt ngày &amp; tính lại Rolling</button><button type="button" class="secondary" id="flex-cancel-review">Hủy</button></div>
+</div>
+<details class="flex-panel" id="flex-reserve-panel"><summary>Reserve chưa chạy (<span id="flex-reserve-count">0</span>)</summary><p class="muted">Chọn Hoàn thành để chuyển sang giờ đã chạy; Đã hủy để loại khỏi giờ giữ chỗ. Có thể Hoàn tác trong Lịch sử. Nếu chỉ nhập Reserve thủ công, hãy sửa cột Reserve trong bảng nhập giờ.</p><div id="flex-reserve-list"></div><button type="button" class="secondary" id="flex-reserve-undo" style="margin-top:10px">↶ Hoàn tác thay đổi gần nhất</button></details>
+<div id="flex-history-panel" class="flex-panel" hidden><p class="muted" style="margin:0 0 10px">Lịch sử lưu lại để kiểm tra OCR, sửa giờ và hoàn tác; <b>không tự xoá khi sang ngày mới hoặc khi ngày đã OUT</b>. Tổng giờ nhập tay vẫn nằm trong bảng chính dù không có block ở đây.</p><div class="controls" style="margin-bottom:12px"><button id="flex-undo" class="secondary" type="button">↶ Hoàn tác sửa / upload gần nhất</button></div><label for="flex-month">Chọn tháng</label><input type="month" id="flex-month"><label for="flex-date-filter" style="margin-top:10px">Lọc theo ngày</label><select id="flex-date-filter"><option value="">Tất cả các ngày</option></select><div id="flex-history-total" class="flex-history-total"></div><div id="flex-history-list"></div></div>
+<details class="flex-panel"><summary>Đồng bộ iPhone & Samsung (Supabase, tùy chọn)</summary><p class="note">Cần thiết lập Supabase và chính sách bảo mật RLS trước. Không dùng mật khẩu Amazon Flex.</p><label>Supabase Project URL</label><input id="flex-supa-url" placeholder="https://xxxxx.supabase.co" autocomplete="off"><label style="margin-top:8px">Publishable / anon key (không dùng service_role)</label><input id="flex-supa-key" placeholder="sb_publishable_..." autocomplete="off"><label style="margin-top:8px">Email</label><input id="flex-email" type="email" autocomplete="username"><label style="margin-top:8px">Mật khẩu Supabase</label><input id="flex-password" type="password" autocomplete="current-password"><div class="flex-tools"><button id="flex-signup" class="secondary">Tạo tài khoản</button><button id="flex-login">Đăng nhập & đồng bộ</button><button id="flex-logout" class="secondary">Đăng xuất</button></div><div id="flex-sync-status" class="flex-status">Chưa kết nối. Dữ liệu vẫn lưu trên thiết bị.</div></details>
+</section>
+<section class="card"><h2>Dự báo 14 ngày tới</h2><p class="note">Dự báo giả sử bạn không chạy thêm IO mới ngoài các giờ đã nhập. Giờ reserve được giữ chỗ khi tính số giờ IO còn lại.</p><div style="overflow-x:auto"><table class="forecast"><thead><tr><th>Ngày</th><th>Thực tế 7N</th><th>Reserve 7N</th><th>IO còn*</th><th>Giờ rơi ra ngày sau</th></tr></thead><tbody id="forecast"></tbody></table></div><p class="muted">* IO còn = giới hạn − giờ thực tế 7 ngày − tất cả reserve chưa chạy trong cửa sổ 7 ngày (ước tính thận trọng). Chỉ tiêu riêng ngày có thể khác do giới hạn/ngày và cách Amazon xét block tương lai.</p></section>
+<section class="card" id="neon-backup"><h2>Sao lưu dữ liệu</h2><div class="controls"><button id="export" title="Xuất toàn bộ dữ liệu mới nhất để gửi ChatGPT hoặc sao lưu">📤 Cập nhật &amp; xuất JSON</button><button class="secondary" id="importBtn">Nhập bản sao</button><input type="file" id="importFile" accept="application/json" hidden></div></section>
+<footer>Ứng dụng hỗ trợ lập kế hoạch, không kết nối với Amazon Flex và không bảo đảm IO sẽ xuất hiện.</footer></main><script id="flex-neon-storage-isolation">
+/* Separate storage namespace for this independent GitHub Pages install.
+   The original app keys are never read or modified by this version.
+   Use the existing Backup JSON controls to copy your data voluntarily. */
+window.flexStorage = Object.freeze({
+  getItem(key){return window.localStorage.getItem('flex-neon-independent-v1::'+String(key));},
+  setItem(key,val){return window.localStorage.setItem('flex-neon-independent-v1::'+String(key),val);},
+  removeItem(key){return window.localStorage.removeItem('flex-neon-independent-v1::'+String(key));}
+});
+</script>
+<script>
+(()=>{'use strict';const $=id=>document.getElementById(id),KEY='flex-rolling-v2',MS=86400000;const samples=[['2026-10-05',316,0],['2026-10-06',248,0],['2026-10-07',306,0],['2026-10-08',174,0],['2026-10-09',260,0],['2026-10-10',433,0],['2026-10-11',477,0],['2026-10-12',466,0],['2026-10-13',0,120],['2026-10-14',0,240],['2026-10-15',0,240],['2026-10-16',0,120]];const initial=()=>Object.fromEntries(samples.map(([d,a,r])=>[d,{a,r}]));let data;try{data=JSON.parse(flexStorage.getItem(KEY))||initial()}catch{data=initial()};const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;const wd=s=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(s||''))return null;const y=Number(s.slice(0,4)),m=Number(s.slice(5,7)),d=Number(s.slice(8,10));const date=new Date(y,m-1,d);if(date.getFullYear()!==y||date.getMonth()!==m-1||date.getDate()!==d)return null;return ['CN','T2','T3','T4','T5','T6','T7'][date.getDay()]};const wdShort=s=>(wd(s)||'')+' - '+s.slice(8,10)+'/'+s.slice(5,7);const wdFull=s=>wd(s)?wdShort(s)+'/'+s.slice(0,4):'';const wdStacked=s=>wdFull(s);const parseDate=s=>new Date(s+'T12:00:00');const shift=(s,n)=>{let d=parseDate(s);d.setDate(d.getDate()+n);return iso(d)};const fmt=m=>{let neg=m<0;m=Math.abs(Math.round(m));return (neg?'-':'')+Math.floor(m/60)+'h'+String(m%60).padStart(2,'0')+'m'};const parse=s=>{s=String(s||'').trim().replace(',','.');if(!s)return 0;if(/^\d+:\d{1,2}$/.test(s)){let [h,m]=s.split(':').map(Number);return h*60+m}if(/^\d+(\.\d+)?$/.test(s))return Math.round(Number(s)*60);return NaN};const edit=m=>Math.floor(m/60)+':'+String(m%60).padStart(2,'0');const n=d=>data[d]||{a:0,r:0};const sum=(d,k)=>{let s=0;for(let i=0;i<7;i++)s+=n(shift(d,-i))[k]||0;return s};const persist=()=>{flexStorage.setItem(KEY,JSON.stringify(data));render()};const outToday=()=>iso(new Date());const isOut=date=>date<shift(outToday(),-6);
+// Display-only sliding window: 4 previous OUT days + 7 rolling days + tomorrow.
+// Never delete old entries: JSON backups continue to include every stored day.
+const visibleRange=()=>{const today=outToday();return {oldest:shift(today,-10),last:shift(today,1)}};
+let shownEveryDate=false;
+const ensureNextDay=()=>{const tomorrow=shift(outToday(),1);if(!Object.prototype.hasOwnProperty.call(data,tomorrow)){data[tomorrow]={a:0,r:0};flexStorage.setItem(KEY,JSON.stringify(data))}};
+function renderEntries(){let keys=Object.keys(data).sort();const {oldest,last}=visibleRange();const hiddenCount=keys.filter(date=>date<oldest||(date>last&&!((Number(data[date]?.a)||0)||(Number(data[date]?.r)||0)))).length;
+if(!shownEveryDate)keys=keys.filter(date=>date>=oldest&&(date<=last||(Number(data[date]?.a)||0)>0||(Number(data[date]?.r)||0)>0));
+const outCount=keys.filter(isOut).length;$('flex-out-count').textContent=outCount?outCount+' ngày OUT':'Không có ngày OUT';
+$('flex-auto-day-note').textContent='Tự trượt theo ngày: '+wdFull(oldest)+' → '+wdFull(last)+' (4 ngày OUT gần nhất + 7 ngày Rolling + ngày mai). '+(hiddenCount?hiddenCount+' ngày khác đang ẩn, vẫn giữ trong JSON.':'Dữ liệu ngày cũ luôn được giữ trong JSON.');
+if($('flex-hide-out').checked)keys=keys.filter(date=>!isOut(date));$('entries').replaceChildren();keys.forEach(date=>{let item=data[date],row=document.createElement('div');row.className='row'+(isOut(date)?' flex-out-row':'');let di=document.createElement('input');di.type='date';di.value=date;di.setAttribute('aria-label','Ngày');di.onchange=()=>{if(!di.value)return;data[di.value]=item;if(di.value!==date)delete data[date];persist()};let dateCell=document.createElement('div');dateCell.className='date-cell';let dateLabel=document.createElement('span');dateLabel.className='date-label';dateLabel.textContent=wdStacked(date);dateCell.append(dateLabel,di);row.append(dateCell);for(const key of ['a','r']){let input=document.createElement('input');input.value=edit(item[key]||0);input.setAttribute('aria-label',key==='a'?'Giờ thực tế':'Giờ reserve');input.onchange=()=>{let val=parse(input.value);if(!Number.isFinite(val)||val<0||val>1440){alert('Nhập giờ hợp lệ như 5:30 hoặc 5.5');input.value=edit(item[key]||0);return}item[key]=val;persist();if(key==='r')document.dispatchEvent(new CustomEvent('flex-manual-reserve-changed',{detail:{date,value:val}}))};row.append(input)}let del=document.createElement('button');del.className='danger';del.textContent='×';del.setAttribute('aria-label','Xóa ngày '+date);del.onclick=()=>{delete data[date];persist()};row.append(del);$('entries').append(row)})}function render(){let day=$('day').value;$('weekday-check-label').textContent=wdStacked(day);let cap=Math.round(Number($('cap').value)*60)||2400,used=sum(day,'a'),reserved=sum(day,'r'),todayReserve=n(day).r||0,free=cap-used,io=cap-used-reserved,old=shift(day,-6),tom=shift(day,1),drop=n(old).a+n(old).r; $('used').textContent=fmt(used);$('free').textContent=fmt(free);$('reserved').textContent=fmt(todayReserve);$('io').textContent=fmt(io);$('io').className=io<0?'red':'green';$('bar').style.width=Math.max(0,Math.min(100,used/cap*100))+'%';$('window').textContent='Cửa sổ: '+shift(day,-6)+' → '+day+' · Reserve chưa chạy trong 7 ngày: '+fmt(reserved);$('released').textContent=fmt(drop);let tomio=cap-sum(tom,'a')-sum(tom,'r');$('tomorrow').textContent=fmt(tomio);$('tomorrow').className=tomio<0?'red':'green';$('explain').textContent='Khi sang '+tom+', ngày '+old+' rời cửa sổ. Giờ thực tế rơi ra: '+fmt(n(old).a)+'. Reserve chưa chạy rơi ra: '+fmt(n(old).r)+'. Nếu không có chuyến mới, khoảng trống rolling tăng tương ứng.';$('warning').textContent=io<0?'⚠ Dữ liệu đã nhập vượt giới hạn 7 ngày '+fmt(cap)+'. Hãy kiểm tra lại giờ hoặc reserve.':io===0?'Bạn đã hết khoảng trống rolling sau khi tính các reserve trong 7 ngày.':'Bạn còn khoảng '+fmt(io)+' theo mô hình 7 ngày sau khi trừ reserve trong cửa sổ. Amazon có thể xét cả reserve ngoài cửa sổ hoặc các giới hạn khác.';let html='';for(let i=0;i<14;i++){let d=shift(day,i),a=sum(d,'a'),r=sum(d,'r'),space=cap-a-r,dropd=shift(d,-6);html+=`<tr><td class="weekday-forecast-date">${wdShort(d)}</td><td>${fmt(a)}</td><td>${fmt(r)}</td><td style="color:${space<0?'#b7352e':'#087c64'};font-weight:700">${fmt(space)}</td><td>${fmt(n(dropd).a+n(dropd).r)}</td></tr>`}$('forecast').innerHTML=html;renderEntries()};let autoToday=true;let lastAutoDate=iso(new Date());const setAutoToday=enabled=>{autoToday=enabled;$('auto-today').checked=enabled;$('auto-today-state').textContent=enabled?'ON':'OFF';if(enabled){lastAutoDate=iso(new Date());$('day').value=lastAutoDate}render()};const manualDay=()=>{if(autoToday)setAutoToday(false);else render()};const refreshToday=()=>{const now=iso(new Date());if(now!==lastAutoDate){lastAutoDate=now;ensureNextDay();if(autoToday)$('day').value=now;}render()};$('day').value=lastAutoDate;$('auto-today').onchange=()=>setAutoToday($('auto-today').checked);$('flex-hide-out').onchange=renderEntries;$('flex-show-all-dates').onchange=()=>{shownEveryDate=$('flex-show-all-dates').checked;renderEntries()};document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshToday()});window.addEventListener('focus',refreshToday);$('cap').onchange=render;$('day').onchange=manualDay;$('next').onclick=()=>{$('day').value=shift($('day').value,1);manualDay()};$('prev').onclick=()=>{$('day').value=shift($('day').value,-1);manualDay()};$('today').onclick=()=>{setAutoToday(true)};const addDatePicker=$('flex-add-date-picker');
+$('add').onclick=()=>{ // Keyboard fallback: touch users tap the native date input overlay.
+ try{if(typeof addDatePicker.showPicker==='function'){addDatePicker.showPicker();return}}catch(_){}
+ addDatePicker.focus();addDatePicker.click();
+};
+addDatePicker.onchange=()=>{const d=addDatePicker.value;
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return;
+ const parsed=new Date(d+'T12:00:00');if(Number.isNaN(parsed.valueOf())||iso(parsed)!==d)return;
+ const {oldest,last}=visibleRange();if(d<oldest||d>last){shownEveryDate=true;$('flex-show-all-dates').checked=true;}
+ // Never overwrite or reset existing time entries when a date already exists.
+ if(!data[d]){data[d]={a:0,r:0};persist()}else render();
+};$('seed').onclick=()=>{if(confirm('Thay dữ liệu hiện tại bằng lịch mẫu 5–16/10?')){data=initial();persist()}};$('clear').onclick=()=>{if(confirm('Xóa toàn bộ giờ chạy và reserve đã lưu?')){data={};persist()}};$('export').onclick=()=>{let blob=new Blob([JSON.stringify({version:2,entries:data},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='flex-rolling-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),2000)};$('importBtn').onclick=()=>$('importFile').click();$('importFile').onchange=async e=>{try{let obj=JSON.parse(await e.target.files[0].text());if(!obj.entries||typeof obj.entries!=='object')throw Error();data=obj.entries;persist()}catch{alert('File sao lưu không hợp lệ')}};window.flexRefresh=()=>{try{data=JSON.parse(flexStorage.getItem(KEY))||{}}catch{data={}};ensureNextDay();render()};ensureNextDay();setInterval(refreshToday,30000);render()})();
+</script><script>if('serviceWorker' in navigator && location.protocol!=='file:'){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=flex-upgrade-20261013').catch(()=>{}));}</script>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id), KEY='flex-rolling-v2', BLOCKKEY='flex-blocks-v1', SETTINGS='flex-sync-config-v1';
+const get=()=>{try{return JSON.parse(flexStorage.getItem(KEY))||{}}catch{return {}}};
+const blocks=()=>{try{return JSON.parse(flexStorage.getItem(BLOCKKEY))||[]}catch{return []}};
+let records=blocks(),pending=[],session=null,config={};try{config=JSON.parse(flexStorage.getItem(SETTINGS))||{}}catch{}
+const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const minutes=(start,end)=>{let [a,b]=[start,end].map(x=>{let [h,m]=x.split(':').map(Number);return h*60+m});if(!Number.isFinite(a)||!Number.isFinite(b))return NaN;return b>a?b-a:NaN};
+const dur=m=>Math.floor(m/60)+':'+String(m%60).padStart(2,'0');
+const safeDate=s=>/^\d{4}-\d{2}-\d{2}$/.test(s)&&!Number.isNaN(new Date(s+'T12:00:00').valueOf());
+const stamp=b=>[b.kind,b.date,b.start,b.end].join('|');
+const uid=()=>crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2);
+const BASEKEY='flex-baseline-v1',SETTLEDKEY='flex-settled-days-v1';
+const loadObject=(key)=>{try{const v=JSON.parse(flexStorage.getItem(key));return v&&typeof v==='object'&&!Array.isArray(v)?v:{}}catch{return {}}};
+let baseline=loadObject(BASEKEY),settled=loadObject(SETTLEDKEY),pendingEarnings=new Set();
+const clockOK=s=>/^([01]\d|2[0-3]):[0-5]\d$/.test(s||'');
+function saveLocal(){flexStorage.setItem(BLOCKKEY,JSON.stringify(records));flexStorage.setItem(BASEKEY,JSON.stringify(baseline));flexStorage.setItem(SETTLEDKEY,JSON.stringify(settled));renderExtra();queueSync()}
+function captureBaseline(date){if(!Object.prototype.hasOwnProperty.call(baseline,date)){const d=get()[date]||{a:0,r:0};baseline[date]={a:Number(d.a)||0,r:Number(d.r)||0}}}
+function rebuildDates(dates){const data=get();for(const date of new Set(dates)){captureBaseline(date);const rows=records.filter(b=>b.date===date),a=rows.filter(b=>b.kind==='a').reduce((n,b)=>n+minutes(b.start,b.end),0),r=rows.filter(b=>b.kind==='r').reduce((n,b)=>n+minutes(b.start,b.end),0);if(settled[date])data[date]={a,r:0};else{const manual=baseline[date].manualReserveOverride;data[date]={a:Math.max(baseline[date].a,a),r:Number.isSafeInteger(manual)&&manual>=0?manual:Math.max(baseline[date].r,r)}}}flexStorage.setItem(KEY,JSON.stringify(data));window.flexRefresh?.()}
+
+// Data integrity: stored Reserve blocks and daily totals can diverge after a restore,
+// an older upload, or switching tabs. Repair the daily total from the saved blocks
+// without deleting any entry or replacing completed hours. Explicit manual edits win.
+function reconcileActiveReserves(){
+ const today=iso(new Date()),daily=new Map();
+ for(const b of records){
+  if(b.kind!=='r'||!safeDate(b.date)||!clockOK(b.start)||!clockOK(b.end))continue;
+  const m=minutes(b.start,b.end);if(!(m>0))continue;
+  daily.set(b.date,(daily.get(b.date)||0)+m);
+ }
+ if(!daily.size)return false;
+ const data=get();let entriesChanged=false,metaChanged=false;
+ for(const [date,total] of daily){
+  if(settled[date]){
+   // An Earnings finalization cannot legitimately be for a future date.
+   if(date<=today)continue;
+   delete settled[date];metaChanged=true;
+  }
+  const existed=Object.prototype.hasOwnProperty.call(baseline,date);
+  captureBaseline(date);
+  if(!existed)metaChanged=true;
+  const manual=baseline[date]?.manualReserveOverride;
+  if(Number.isSafeInteger(manual)&&manual>=0)continue;
+  const current=data[date]||{a:0,r:0};
+  const required=Math.max(Number(baseline[date].r)||0,total);
+  if((Number(current.r)||0)<required){
+   data[date]={...current,a:Number(current.a)||0,r:required};
+   entriesChanged=true;
+  }
+ }
+ if(metaChanged){
+  flexStorage.setItem(BASEKEY,JSON.stringify(baseline));
+  flexStorage.setItem(SETTLEDKEY,JSON.stringify(settled));
+ }
+ if(entriesChanged){flexStorage.setItem(KEY,JSON.stringify(data));window.flexRefresh?.()}
+ return entriesChanged;
+}
+document.addEventListener('flex-manual-reserve-changed',event=>{
+ const {date,value}=event.detail||{};
+ if(!safeDate(date)||!Number.isSafeInteger(value)||value<0||value>1440)return;
+ captureBaseline(date);
+ baseline[date].manualReserveOverride=value;
+ flexStorage.setItem(BASEKEY,JSON.stringify(baseline));
+});
+window.addEventListener('pageshow',()=>reconcileActiveReserves());
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)reconcileActiveReserves()});
+
+function addBlocks(newRows,earningsDates=new Set()){
+ const affected=new Set(),old=get(),added=[];let duplicates=0,converted=0,canceled=0;
+ const byDate={};for(const b of newRows)(byDate[b.date]??=[]).push(b);
+ // Save a local rollback snapshot before every real import.
+ const snapshot=()=>{const payload={version:3,entries:old,blocks:records,baseline,settled};flexStorage.setItem('flex-pre-import-snapshot-v1',JSON.stringify(payload))};
+ let changed=false;
+ for(const date of Object.keys(byDate)){
+  const rows=[...new Map(byDate[date].map(b=>[b.kind+'|'+b.start+'|'+b.end,b])).values()];
+  captureBaseline(date);affected.add(date);
+  if(earningsDates.has(date)){
+   const completed=rows.filter(b=>b.kind==='a');if(!completed.length)continue;
+   if(!changed){snapshot();changed=true}
+   const wanted=new Set(completed.map(b=>b.start+'|'+b.end));
+   for(const b of records.filter(b=>b.date===date)){
+    if(b.kind==='r'){
+     if(wanted.has(b.start+'|'+b.end)){b.kind='a';converted++}
+     else{b.kind='c';canceled++}
+     b.updatedAt=new Date().toISOString();
+    }
+   }
+   // Earnings is authoritative for the date: remove outdated completed details, keep cancelled history.
+   const oldCompleted=records.filter(b=>b.date===date&&b.kind==='a');
+   const exact=new Map(oldCompleted.map(b=>[b.start+'|'+b.end,b]));
+   records=records.filter(b=>b.date!==date||b.kind!=='a');
+   for(const b of completed){const match=exact.get(b.start+'|'+b.end);records.push(match||{...b,id:uid(),updatedAt:new Date().toISOString()});if(!match){added.push(b)}}
+   settled[date]=new Date().toISOString();
+  }else{
+   if(settled[date]){
+    if(date<=iso(new Date()))continue; // Keep genuine completed days closed.
+    if(!changed){snapshot();changed=true}
+    delete settled[date]; // A future date could not have valid final Earnings.
+   }
+   for(const b of rows){if(records.some(x=>x.date===date&&x.start===b.start&&x.end===b.end&&(x.kind===b.kind||(b.kind==='r'&&['a','c'].includes(x.kind))))){duplicates++;continue}
+    if(!changed){snapshot();changed=true}
+    if(b.kind==='r'&&baseline[date])delete baseline[date].manualReserveOverride;
+    records.push({...b,id:uid(),updatedAt:new Date().toISOString()});added.push(b)}
+  }
+ }
+ if(changed){rebuildDates(affected);saveLocal()}
+ return {added:added.length,duplicates,converted,canceled,settled:[...earningsDates].filter(d=>byDate[d]?.some(b=>b.kind==='a'))};
+}
+// Reserve status transitions use an undo snapshot and never add a block twice.
+function changeReserveStatus(ids,kind){
+ if(!['a','c'].includes(kind))return;
+ const selected=records.filter(b=>b.kind==='r'&&ids.includes(b.id));
+ if(!selected.length){alert('Không tìm thấy Reserve chưa chạy. Vui lòng tải lại trang.');return}
+ const dates=[...new Set(selected.map(b=>b.date))];
+ const total=selected.reduce((sum,b)=>sum+minutes(b.start,b.end),0);
+ const verb=kind==='a'?'Hoàn thành':'Đã hủy';
+ if(!confirm(verb+' '+selected.length+' Reserve ('+dur(total)+') ngày '+dates.map(displayDate).join(', ')+'?\n\n'+(kind==='a'?'Giờ được chuyển sang Đã chạy, không cộng trùng với số giờ đã nhập.':'Các giờ Reserve này sẽ không tính vào Rolling. Giờ đã chạy được giữ nguyên.')+'\nCó thể hoàn tác trong Lịch sử.'))return;
+ // Snapshot data before any edit. Matches the existing import undo format (JSON v3).
+ flexStorage.setItem('flex-pre-import-snapshot-v1',JSON.stringify({version:3,entries:get(),blocks:records,baseline,settled}));
+ const before=get();
+ for(const date of dates){
+   captureBaseline(date);
+   // A historical baseline must never resurrect a Reserve after status change.
+   baseline[date].r=0;
+   delete baseline[date].manualReserveOverride;
+   baseline[date].a=Math.max(Number(baseline[date].a)||0,Number(before[date]?.a)||0);
+ }
+ const now=new Date().toISOString();
+ for(const b of selected){
+   if(kind==='a'&&records.some(x=>x.id!==b.id&&x.date===b.date&&x.start===b.start&&x.end===b.end&&x.kind==='a')){
+     // OCR already saved this exact Completed block: don't double-count it.
+     records=records.filter(x=>x.id!==b.id);
+   }else{
+     b.kind=kind;
+     b.updatedAt=now;
+   }
+ }
+ rebuildDates(dates);
+ // A finalized Earnings day can include manual IO not represented by its block list.
+ // Preserve an existing larger Completed total without ever adding the same hours twice.
+ const next=get();let corrected=false;
+ for(const date of dates){const oldA=Number(before[date]?.a)||0;
+   if((Number(next[date]?.a)||0)<oldA){next[date]={...(next[date]||{}),a:oldA};corrected=true}
+ }
+ if(corrected){flexStorage.setItem(KEY,JSON.stringify(next));window.flexRefresh?.()}
+ saveLocal();
+}
+function removeBlock(id){const b=records.find(x=>x.id===id);if(!b||!confirm('Xóa block '+b.date+' '+b.start+'–'+b.end+'?'))return;captureBaseline(b.date);if(b.kind==='r')baseline[b.date].r=0;if(b.kind==='a')baseline[b.date].a=0;records=records.filter(x=>x.id!==id);rebuildDates([b.date]);saveLocal()}
+function undoLastImport(){const raw=flexStorage.getItem('flex-pre-import-snapshot-v1');if(!raw){alert('Chưa có bản ghi để hoàn tác.');return}if(!confirm('Hoàn tác lần sửa Reserve/upload/chốt ngày gần nhất? Dữ liệu mới nhập sau đó có thể bị thay thế.'))return;try{const snap=JSON.parse(raw);if(!snap.entries||!Array.isArray(snap.blocks))throw Error('Snapshot không hợp lệ');flexStorage.setItem(KEY,JSON.stringify(snap.entries));records=snap.blocks;baseline=snap.baseline||{};settled=snap.settled||{};flexStorage.setItem(BLOCKKEY,JSON.stringify(records));flexStorage.setItem(BASEKEY,JSON.stringify(baseline));flexStorage.setItem(SETTLEDKEY,JSON.stringify(settled));flexStorage.removeItem('flex-pre-import-snapshot-v1');window.flexRefresh?.();renderExtra();queueSync();alert('Đã hoàn tác thay đổi gần nhất.')}catch(err){alert('Không thể hoàn tác: '+err.message)}}
+function settleZeroDay(){const date=prompt('Ngày không có chuyến hoàn thành (YYYY-MM-DD):',$('day').value);if(!date)return;if(!safeDate(date)){alert('Ngày không hợp lệ.');return}if(!confirm('Chốt '+date+' với 0 giờ thực tế và hủy toàn bộ Reserve chưa chạy của ngày này?'))return;captureBaseline(date);flexStorage.setItem('flex-pre-import-snapshot-v1',JSON.stringify({version:3,entries:get(),blocks:records,baseline,settled}));for(const b of records.filter(x=>x.date===date&&x.kind==='r'))b.kind='c';records=records.filter(b=>b.date!==date||b.kind!=='a');settled[date]=new Date().toISOString();rebuildDates([date]);saveLocal()}
+function renderExtra(){
+ const reserves=records.filter(b=>b.kind==='r').sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start));
+ $('flex-reserve-count').textContent=reserves.length;
+ const reserveList=$('flex-reserve-list');reserveList.replaceChildren();
+ const byDate={};for(const b of reserves)(byDate[b.date]??=[]).push(b);
+ for(const date of Object.keys(byDate).sort()){
+   const card=document.createElement('div');card.className='flex-reserve-day';
+   const heading=document.createElement('div');heading.className='flex-reserve-heading';heading.textContent='Reserve — '+displayDate(date);card.append(heading);
+   let total=0;
+   for(const b of byDate[date]){
+     const m=minutes(b.start,b.end);total+=m;
+     const row=document.createElement('div');row.className='flex-item';
+     const t=document.createElement('span');t.textContent=displayTime(b.start)+' – '+displayTime(b.end)+' · '+dur(m)+' Reserve';
+     const actions=document.createElement('div');actions.className='controls flex-reserve-actions';
+     const done=document.createElement('button');done.className='secondary';done.textContent='✓ Hoàn thành';done.setAttribute('aria-label','Hoàn thành Reserve '+displayDate(date)+' '+b.start);done.onclick=()=>changeReserveStatus([b.id],'a');
+     const cancel=document.createElement('button');cancel.className='danger';cancel.textContent='✕ Đã hủy';cancel.setAttribute('aria-label','Hủy Reserve '+displayDate(date)+' '+b.start);cancel.onclick=()=>changeReserveStatus([b.id],'c');
+     const btn=document.createElement('button');btn.className='secondary';btn.textContent='🗑 Xóa';btn.setAttribute('aria-label','Xóa reserve '+displayDate(date)+' '+b.start);btn.onclick=()=>removeBlock(b.id);
+     actions.append(done,cancel,btn);row.append(t,actions);card.append(row);
+   }
+   const totalRow=document.createElement('div');totalRow.className='flex-reserve-total';totalRow.innerHTML='<span>Tổng Reserve</span>';const val=document.createElement('span');val.textContent=dur(total);totalRow.append(val);card.append(totalRow);
+   const dayActions=document.createElement('div');dayActions.className='controls flex-reserve-day-actions';
+   const completeAll=document.createElement('button');completeAll.className='secondary';completeAll.textContent='✓ Hoàn thành cả ngày';completeAll.onclick=()=>changeReserveStatus(byDate[date].map(b=>b.id),'a');
+   const cancelAll=document.createElement('button');cancelAll.className='danger';cancelAll.textContent='✕ Hủy tất cả Reserve';cancelAll.onclick=()=>changeReserveStatus(byDate[date].map(b=>b.id),'c');
+   dayActions.append(completeAll,cancelAll);card.append(dayActions);reserveList.append(card);
+ }
+ if(!reserves.length)reserveList.textContent='Chưa có reserve được lưu theo từng block. Các giờ reserve nhập tay vẫn hiển thị trong bảng gốc.';
+ const month=$('flex-month').value,select=$('flex-date-filter'),previous=select.value;
+ const all=records.filter(b=>!month||b.date.startsWith(month));
+ const dates=[...new Set(all.map(b=>b.date))].sort().reverse();select.replaceChildren();
+ const allOpt=document.createElement('option');allOpt.value='';allOpt.textContent='Tất cả các ngày';select.append(allOpt);
+ for(const date of dates){const opt=document.createElement('option');opt.value=date;opt.textContent=displayDate(date);select.append(opt)}
+ select.value=dates.includes(previous)?previous:'';
+ const filtered=all.filter(b=>!select.value||b.date===select.value),group={};
+ for(const b of filtered)(group[b.date]??=[]).push(b);
+ const completed=filtered.filter(b=>b.kind==='a');const total=completed.reduce((sum,b)=>sum+minutes(b.start,b.end),0);
+ $('flex-history-total').textContent='Tổng giờ Completed: '+dur(total)+' · '+new Set(completed.map(b=>b.date)).size+' ngày có dữ liệu';
+ const list=$('flex-history-list');list.replaceChildren();
+ for(const date of Object.keys(group).sort().reverse()){
+   const day=document.createElement('details');day.className='flex-history-day';
+   const summary=document.createElement('summary');const a=group[date].filter(b=>b.kind==='a').reduce((sum,b)=>sum+minutes(b.start,b.end),0);
+   summary.textContent=displayDate(date)+' · '+dur(a)+' Completed · '+group[date].length+' block';day.append(summary);
+   for(const b of group[date].sort((x,y)=>x.start.localeCompare(y.start))){
+     const row=document.createElement('div');row.className='flex-item';
+     const t=document.createElement('span');t.textContent=(b.kind==='a'?'Completed':b.kind==='c'?'Đã hủy':'Reserve')+' · '+displayTime(b.start)+' – '+displayTime(b.end)+' · '+dur(minutes(b.start,b.end));
+     const actions=document.createElement('div');actions.className='controls';
+     const edit=document.createElement('button');edit.className='secondary';edit.textContent='Sửa';edit.onclick=()=>editBlock(b.id);
+     const del=document.createElement('button');del.className='danger';del.textContent='Xóa';del.onclick=()=>removeBlock(b.id);
+     actions.append(edit,del);row.append(t,actions);day.append(row);
+   }list.append(day);
+ }
+ if(!Object.keys(group).length)list.textContent='Chưa có block trong khoảng thời gian này.';
+}
+const histWd=s=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(s||''))return null;const y=Number(s.slice(0,4)),m=Number(s.slice(5,7)),d=Number(s.slice(8,10));const date=new Date(y,m-1,d);if(date.getFullYear()!==y||date.getMonth()!==m-1||date.getDate()!==d)return null;return ['CN','T2','T3','T4','T5','T6','T7'][date.getDay()]};const histWdShort=s=>(histWd(s)||'')+' - '+s.slice(8,10)+'/'+s.slice(5,7);const histWdFull=s=>histWd(s)?histWdShort(s)+'/'+s.slice(0,4):'';const histWdStacked=s=>histWdFull(s);
+function displayDate(d){return histWdFull(d)}
+function displayTime(t){const [h,m]=t.split(':').map(Number);return (h%12||12)+':'+String(m).padStart(2,'0')+(h>=12?' PM':' AM')}
+function editBlock(id){const old=records.find(b=>b.id===id);if(!old)return;let date=prompt('Ngày YYYY-MM-DD',old.date);if(date===null)return;let start=prompt('Bắt đầu HH:MM (24h)',old.start);if(start===null)return;let end=prompt('Kết thúc HH:MM (24h)',old.end);if(end===null)return;let kind=prompt('Loại: a = Completed, r = Reserve, c = Đã hủy',old.kind);if(kind===null)return;const updated={...old,date,start,end,kind,updatedAt:new Date().toISOString()};if(!safeDate(date)||!/^([01]\d|2[0-3]):[0-5]\d$/.test(start)||!/^([01]\d|2[0-3]):[0-5]\d$/.test(end)||!['a','r','c'].includes(kind)||!(minutes(start,end)>0)){alert('Ngày, giờ hoặc loại block không hợp lệ.');return}if(records.some(b=>b.id!==id&&stamp(b)===stamp(updated))){alert('Block này đã tồn tại.');return}captureBaseline(old.date);captureBaseline(date);baseline[old.date]={a:0,r:0};baseline[date]={a:0,r:0};records=records.map(b=>b.id===id?updated:b);rebuildDates([old.date,date]);saveLocal()}
+$('flex-zero').onclick=settleZeroDay;$('flex-undo').onclick=undoLastImport;$('flex-reserve-undo').onclick=undoLastImport;
+$('flex-history-toggle').onclick=()=>{const box=$('flex-history-panel');box.hidden=!box.hidden;$('flex-history-toggle').textContent=box.hidden?'🕘 Xem lịch sử':'🕘 Ẩn lịch sử';renderExtra()};$('flex-month').value=iso(new Date()).slice(0,7);$('flex-month').onchange=()=>{$('flex-date-filter').value='';renderExtra()};$('flex-date-filter').onchange=renderExtra;
+$('flex-upload').onclick=()=>$('flex-images').click();$('flex-cancel-review').onclick=()=>{$('flex-review-panel').hidden=true;pendingEarnings=new Set();flexAppendReview=false;$('flex-earnings-confirm').checked=false};
+const normalizeTime=(h,m,ampm)=>{h=Number(h);m=Number(m);if(h>23||m>59)return null;if(ampm){if(h<1||h>12)return null;h=h%12+(ampm.toUpperCase()==='PM'?12:0)}return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')};
+function inferDate(month,day,year,weekday){
+ const now=new Date(),candidates=[];for(const y of year?[Number(year)]:[now.getFullYear()-1,now.getFullYear(),now.getFullYear()+1]){
+  const d=new Date(y,Number(month)-1,Number(day),12);if(d.getMonth()!==Number(month)-1||d.getDate()!==Number(day))continue;
+  if(weekday&&d.getDay()!==['sun','mon','tue','wed','thu','fri','sat'].indexOf(weekday.toLowerCase().slice(0,3)))continue;
+  candidates.push({date:iso(d),distance:Math.abs(d.getTime()-now.getTime())});
+ }
+ candidates.sort((a,b)=>a.distance-b.distance);return candidates.length&&candidates[0].distance<400*86400000?candidates[0].date:'';
+}
+function dateInLine(line){
+ let m=line.match(/\b(20\d\d)[\/-](\d{1,2})[\/-](\d{1,2})\b/);if(m)return inferDate(m[2],m[3],m[1]);
+ const wd='(?:Mon(?:day)?|Tue(?:sday)?|Wed(?:nesday)?|Thu(?:rsday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?)';
+ m=line.match(new RegExp('\\b('+wd+')?\\s*,?\\s*(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\\s+(\\d{1,2})(?:,?\\s+(20\\d\\d))?\\b','i'));
+ if(m){const month=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'].indexOf(m[2].slice(0,3).toLowerCase())+1;return inferDate(month,m[3],m[4],m[1])}
+ m=line.match(new RegExp('\\b('+wd+')\\s*,?\\s*(\\d{1,2})[\\/-](\\d{1,2})(?:[\\/-](20\\d\\d))?\\b','i'));
+ if(m)return inferDate(m[2],m[3],m[4],m[1]);
+ return '';
+}
+function parseImageText(text){
+ // Classify the *image*, not the hour count. Earnings screenshots may be cropped
+ // without their title: "Paid", "Base: $...", "Tips: $..." still identify them.
+ const isEarnings=/\bearnings\b|\bpaid\b|\btips?\s+pending\b|\bcompleted\s+(?:deliveries|blocks)\b|\b(?:base|tips)\s*:\s*\$?\s*\d/i.test(text);
+ const isSchedule=/\byour\s+schedule\b|\bscheduled\s+to\s+deliver\b|\bupcoming\s+offers\b/i.test(text);
+ // Ambiguous/unknown screenshots must NOT silently be entered as Reserve.
+ const source=isSchedule&&!isEarnings?'schedule':isEarnings&&!isSchedule?'earnings':'unknown';
+ const kind=source==='schedule'?'r':source==='earnings'?'a':'',rows=[];
+ const lines=String(text).replace(/[–—−]/g,'-').split(/\n/).map(x=>x.trim()).filter(Boolean);
+ let date='',dateContext='',skip=false;
+ const token=/\b(\d{1,2}):(\d{2})\s*(AM|PM)\b/gi;
+ for(let i=0;i<lines.length;i++){
+  const line=lines[i],foundDate=dateInLine(line);
+  if(foundDate){date=foundDate;dateContext=line;skip=/instant cash out|payment issued|transfer|cash out/i.test(line)}
+  if(/instant cash out|payment issued|transfer complete/i.test(line)){skip=true;continue}
+  if(/scheduled to deliver|delivery block|deliveries|tips pending|completed/i.test(line))skip=false;
+  if(skip)continue;
+  const times=[...line.matchAll(token)].map(m=>({h:m[1],m:m[2],ampm:m[3]}));
+  // A block must have two explicit AM/PM times on the same line, or two consecutive time-only lines.
+  if(times.length>=2){for(let j=0;j+1<times.length;j+=2){const start=normalizeTime(times[j].h,times[j].m,times[j].ampm),end=normalizeTime(times[j+1].h,times[j+1].m,times[j+1].ampm);if(start&&end&&minutes(start,end)>0&&minutes(start,end)<=720)rows.push({date,start,end,kind})}continue}
+  if(times.length===1&&i+1<lines.length){const next=[...lines[i+1].matchAll(token)];if(next.length===1&&/^\s*\d{1,2}:\d{2}\s*(AM|PM)\s*$/i.test(lines[i])&&/^\s*\d{1,2}:\d{2}\s*(AM|PM)\s*$/i.test(lines[i+1])){const a=times[0],b=next[0],start=normalizeTime(a.h,a.m,a.ampm),end=normalizeTime(b[1],b[2],b[3]);if(start&&end&&minutes(start,end)>0&&minutes(start,end)<=720)rows.push({date,start,end,kind});i++}}
+ }
+ // If OCR drops all date headers, leave blank and require manual date review.
+ return {rows:[...new Map(rows.map(b=>[b.kind+'|'+b.date+'|'+b.start+'|'+b.end,b])).values()],source};
+}
+let flexAppendReview=false,flexReviewBusy=false;
+function pendingReviewRows(){return [...$('flex-review-list').querySelectorAll('.flex-review')].map(n=>n.extract())}
+function earningsDays(rows){return [...new Set(rows.filter(b=>(b.source==='earnings'||b.source==='unknown')&&b.kind==='a'&&safeDate(b.date)).map(b=>b.date))].sort()}
+function updateClosePreview(){
+ const rows=pendingReviewRows(),days=earningsDays(rows),close=$('flex-earnings-close'),preview=$('flex-earnings-preview');
+ close.hidden=days.length===0;preview.replaceChildren();
+ for(const date of days){
+  const unique=new Map(rows.filter(b=>b.date===date&&b.kind==='a'&&clockOK(b.start)&&clockOK(b.end)&&minutes(b.start,b.end)>0).map(b=>[b.start+'|'+b.end,b]));
+  const total=[...unique.values()].reduce((n,b)=>n+minutes(b.start,b.end),0),previous=Number(get()[date]?.a)||0;
+  const line=document.createElement('div');line.className='flex-close-day';
+  const left=document.createElement('span');left.textContent=displayDate(date)+' · '+unique.size+' chuyến';
+  const right=document.createElement('strong');right.textContent=dur(total)+' Completed'+(previous!==total?' (đang lưu '+dur(previous)+')':'');
+  line.append(left,right);preview.append(line);
+ }
+ // Explicit checkbox is revoked whenever the OCR rows, dates, or times change.
+ $('flex-earnings-confirm').checked=false;
+}
+$('flex-add-block').onclick=()=>reviewRow({date:'',start:'',end:'',kind:'a',source:'manual'});
+$('flex-add-images').onclick=()=>{if(flexReviewBusy)return;flexAppendReview=true;$('flex-upload').click()};
+function reviewRow(b){let row=document.createElement('div');row.className='flex-review';const field=(label,type,value,cl)=>{let wrap=document.createElement('div');wrap.className=cl||'';let lab=document.createElement('label');lab.textContent=label;let el=document.createElement('input');el.type=type;el.value=value||'';wrap.append(lab,el);row.append(wrap);return el};let date=field('Ngày','date',b.date,'flex-date'),start=field('Bắt đầu','time',b.start),end=field('Kết thúc','time',b.end);const dateWrap=date.parentElement,preview=document.createElement('span');preview.className='weekday-date-preview';preview.setAttribute('aria-hidden','true');const updateReviewDate=()=>{preview.textContent=histWdFull(date.value)||'Chạm để chọn ngày'};dateWrap.insertBefore(preview,date);date.addEventListener('change',updateReviewDate);updateReviewDate();let wrap=document.createElement('div');let lab=document.createElement('label');lab.textContent='Loại';let kind=document.createElement('select');kind.innerHTML='<option value="">Chưa rõ — chọn loại</option><option value="a">Completed</option><option value="r">Reserve</option>';kind.value=b.kind;wrap.append(lab,kind);row.append(wrap);let remove=document.createElement('button');remove.className='danger flex-remove';remove.textContent='Bỏ';remove.onclick=()=>{row.remove();updateClosePreview()};row.append(remove);row.extract=()=>({date:date.value,start:start.value,end:end.value,kind:kind.value,source:b.source||'manual'});for(const el of [date,start,end,kind])el.addEventListener('change',updateClosePreview);$('flex-review-list').append(row);updateClosePreview()}
+$('flex-images').onchange=async e=>{
+ const files=[...e.target.files];if(!files.length)return;if(flexReviewBusy)return;flexReviewBusy=true;if(!flexAppendReview){pendingEarnings=new Set();$('flex-review-list').replaceChildren()}flexAppendReview=false;$('flex-review-panel').hidden=false;$('flex-earnings-confirm').checked=false;$('flex-ocr-status').textContent='Đang đọc '+files.length+' ảnh…';
+ try{if(!window.Tesseract){await new Promise((resolve,reject)=>{let s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';s.onload=resolve;s.onerror=reject;document.head.append(s)})}
+  let found=0,unknown=0,unclearKind=0,completedCount=0,reserveCount=0;for(let i=0;i<files.length;i++){$('flex-ocr-status').textContent=`Đang đọc ảnh ${i+1}/${files.length}: ${files[i].name}`;const result=await Tesseract.recognize(files[i],'eng');const parsed=parseImageText(result.data.text);for(const b of parsed.rows){reviewRow({...b,source:parsed.source});found++;if(!b.date)unknown++;if(parsed.source==='unknown')unclearKind++;else if(parsed.source==='earnings')completedCount++;else reserveCount++;if(parsed.source==='earnings'&&b.date)pendingEarnings.add(b.date)} }
+  $('flex-ocr-status').textContent=found?`Đã nhận diện ${found} block: ${completedCount} Completed, ${reserveCount} Reserve${unclearKind?', '+unclearKind+' chưa rõ loại':''}${unknown?', '+unknown+' chưa rõ ngày':''}. Đã chọn loại tự động theo nội dung ảnh. Hãy kiểm tra các dòng trước khi lưu; Earnings cuối ngày sẽ chốt giờ và loại Reserve chưa chạy của đúng ngày.`:'Chưa nhận diện được block. Có thể thêm block thủ công bên dưới.';
+ }catch(err){$('flex-ocr-status').textContent='OCR lỗi: '+err.message+'. Bạn vẫn có thể nhập block thủ công.'}
+ flexReviewBusy=false;updateClosePreview();e.target.value='';
+};
+$('flex-save-blocks').onclick=()=>{
+ if(flexReviewBusy){alert('Đang đọc ảnh. Vui lòng đợi OCR hoàn thành.');return}
+ const rows=pendingReviewRows();if(!rows.length){alert('Chưa có block để lưu.');return}
+ for(const b of rows){if(!safeDate(b.date)||!clockOK(b.start)||!clockOK(b.end)||!(minutes(b.start,b.end)>0)){alert('Kiểm tra ngày, giờ bắt đầu và kết thúc của từng block.');return}if(!['a','r'].includes(b.kind)){alert('Có ảnh chưa xác định được Completed hay Reserve. Hãy chọn loại cho dòng đó trước khi lưu.');return}}
+ // Exact same block can appear in overlapping screenshots. Only count it once.
+ const unique=[...new Map(rows.map(b=>[b.date+'|'+b.start+'|'+b.end+'|'+b.kind,b])).values()];
+ const earningsDates=new Set(earningsDays(unique));
+ if(earningsDates.size&&!$('flex-earnings-confirm').checked){alert('Bạn cần xác nhận ĐÃ UPLOAD ĐẦY ĐỦ Earnings của từng ngày trước khi chốt. Nếu còn ảnh, bấm “Thêm ảnh vào lần kiểm tra”.');return}
+ for(const date of earningsDates){
+  const completed=unique.filter(b=>b.date===date&&b.kind==='a');
+  const total=completed.reduce((n,b)=>n+minutes(b.start,b.end),0);
+  const previous=Number(get()[date]?.a)||0;
+  if(total<previous&&!confirm('CẢNH BÁO: '+displayDate(date)+' hiện có '+dur(previous)+' Completed, nhưng bộ Earnings vừa chọn chỉ có '+dur(total)+'. Nếu ảnh chưa đủ, bấm Hủy rồi bổ sung ảnh. Chỉ bấm OK nếu chắc chắn muốn THAY tổng ngày bằng số nhỏ hơn.'))return;
+ }
+ const result=addBlocks(unique.map(({source,...b})=>b),earningsDates);
+ alert(earningsDates.size?`Đã chốt Earnings ${[...earningsDates].map(displayDate).join(', ')}. Tổng giờ theo từng ngày đã được thay bằng Earnings đầy đủ; Reserve cùng ngày về 0. Rolling đã cập nhật. ${result.added} block mới, ${rows.length-unique.length} dòng ảnh trùng được bỏ qua.`:`Đã lưu ${result.added} block; ${result.duplicates} trùng. Rolling đã cập nhật.`);
+ $('flex-review-panel').hidden=true;pendingEarnings=new Set();flexAppendReview=false;$('flex-earnings-confirm').checked=false;
+};
+// Cloud synchronization: one row per user, protected by Supabase RLS. Explicit sign-in only.
+const status=t=>$('flex-sync-status').textContent=t;
+$('flex-supa-url').value=config.url||'';$('flex-supa-key').value=config.key||'';$('flex-email').value=config.email||'';
+function configRead(){const url=$('flex-supa-url').value.trim().replace(/\/$/,'');const key=$('flex-supa-key').value.trim();const email=$('flex-email').value.trim();if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url)||!key||!email)throw Error('Điền Supabase URL, publishable/anon key và email hợp lệ.');config={url,key,email};flexStorage.setItem(SETTINGS,JSON.stringify(config));return config}
+async function auth(endpoint){let c=configRead(),password=$('flex-password').value;if(!password)throw Error('Nhập mật khẩu Supabase.');let response=await fetch(c.url+'/auth/v1/'+endpoint,{method:'POST',headers:{'apikey':c.key,'Content-Type':'application/json'},body:JSON.stringify({email:c.email,password})});let result=await response.json();if(!response.ok)throw Error(result.msg||result.error_description||result.message||'Đăng nhập thất bại');return result}
+$('flex-signup').onclick=async()=>{try{await auth('signup');status('Đã gửi yêu cầu đăng ký. Nếu bật xác minh email, hãy xác minh trước khi đăng nhập.')}catch(e){status(e.message)}};
+$('flex-login').onclick=async()=>{try{let s=await auth('token?grant_type=password');session=s;status('Đã đăng nhập. Đang đồng bộ…');await sync(true)}catch(e){status('Không thể đăng nhập/đồng bộ: '+e.message)}};
+$('flex-logout').onclick=()=>{session=null;$('flex-password').value='';status('Đã đăng xuất. Dữ liệu trên thiết bị vẫn được giữ.')};
+async function request(path,method,body){if(!session?.access_token)throw Error('Chưa đăng nhập');const c=config;let response=await fetch(c.url+'/rest/v1/'+path,{method,headers:{apikey:c.key,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=representation'},body:body?JSON.stringify(body):undefined});let text=await response.text();if(!response.ok)throw Error(text.slice(0,250));return text?JSON.parse(text):[]}
+let syncing=false;async function sync(initial=false){if(!session||syncing)return;syncing=true;try{const user=session.user?.id;if(!user)throw Error('Không tìm thấy user id');let remote=await request('flex_state?user_id=eq.'+encodeURIComponent(user)+'&select=entries,blocks','GET');if(initial&&remote.length){let cloud=remote[0],local=get();if(!confirm('Tìm thấy dữ liệu trên cloud. Chọn OK để dùng dữ liệu cloud trên thiết bị này; Cancel để giữ dữ liệu trên thiết bị và ghi lên cloud. Hãy sao lưu JSON trước khi thay thế.')){await uploadState(user)}else{flexStorage.setItem(KEY,JSON.stringify(cloud.entries||{}));records=Array.isArray(cloud.blocks)?cloud.blocks:[];flexStorage.setItem(BLOCKKEY,JSON.stringify(records));baseline={};settled={};flexStorage.removeItem(BASEKEY);flexStorage.removeItem(SETTLEDKEY);status('Đã tải dữ liệu cloud. Đang làm mới ứng dụng…');location.reload();return}}else await uploadState(user);status('Đồng bộ thành công · '+new Date().toLocaleTimeString('vi-VN'))}catch(e){status('Đồng bộ lỗi: '+e.message)}finally{syncing=false}}
+async function uploadState(user){await request('flex_state?on_conflict=user_id','POST',{user_id:user,entries:get(),blocks:records,updated_at:new Date().toISOString()})}
+let syncTimer;function queueSync(){if(!session)return;clearTimeout(syncTimer);syncTimer=setTimeout(()=>sync(false),1200)}
+// Observe existing app's local persistence so manual edits and backups also sync.
+const originalSet=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){originalSet.call(this,k,v);if(k===KEY&&session)queueSync()};
+
+// Backup v3: full daily totals and itemized blocks; no credentials or screenshots.
+const BACKUP_VERSION=3;
+const validClock=s=>typeof s==='string'&&/^([01]\d|2[0-3]):[0-5]\d$/.test(s);
+const cleanEntries=entries=>{
+ if(!entries||typeof entries!=='object'||Array.isArray(entries))throw Error('Thiếu dữ liệu giờ theo ngày.');
+ const out={};
+ for(const [date,item] of Object.entries(entries)){
+  if(!safeDate(date)||!item||typeof item!=='object')throw Error('Ngày hoặc dữ liệu không hợp lệ: '+date);
+  const a=Number(item.a),r=Number(item.r);
+  if(!Number.isSafeInteger(a)||!Number.isSafeInteger(r)||a<0||r<0||a>1440||r>1440)throw Error('Số phút không hợp lệ tại '+date);
+  out[date]={a,r};
+ }
+ return out;
+};
+const cleanBlocks=items=>{
+ if(!Array.isArray(items))throw Error('Danh sách block không hợp lệ.');
+ const ids=new Set(),stamps=new Set();
+ return items.map((item,i)=>{
+  if(!item||!['a','r','c'].includes(item.kind)||!safeDate(item.date)||!validClock(item.start)||!validClock(item.end)||!(minutes(item.start,item.end)>0))throw Error('Block số '+(i+1)+' không hợp lệ.');
+  const id=typeof item.id==='string'&&item.id.length<200&&item.id?item.id:uid();
+  const mark=stamp(item);
+  if(ids.has(id)||stamps.has(mark))throw Error('File chứa block trùng lặp: '+mark);
+  ids.add(id);stamps.add(mark);
+  return {id,date:item.date,start:item.start,end:item.end,kind:item.kind,updatedAt:typeof item.updatedAt==='string'?item.updatedAt:new Date().toISOString()};
+ });
+};
+function exportFullBackup(){
+ try{
+  // Daily manual edits are saved by their change handlers. Blurring the active
+  // field first also commits a value that the user has just finished typing.
+  const active=document.activeElement;
+  if(active&&typeof active.blur==='function')active.blur();
+  const entries=cleanEntries(get());
+  const itemized=cleanBlocks(records);
+  const now=new Date(),selectedDay=safeDate($('day').value)?$('day').value:iso(now);
+  const limitMinutes=Math.round((Number($('cap').value)||40)*60);
+  const rollingDates=Array.from({length:7},(_,i)=>{const d=new Date(selectedDay+'T12:00:00');d.setDate(d.getDate()-i);return iso(d)});
+  const rollingCompletedMinutes=rollingDates.reduce((t,d)=>t+(entries[d]?.a||0),0);
+  const rollingReserveMinutes=rollingDates.reduce((t,d)=>t+(entries[d]?.r||0),0);
+  // This summary is convenient for reviewing one JSON in ChatGPT. The original
+  // version 3 backup keys remain intact and can still be restored as before.
+  const summary={selectedDay,rollingWindowStart:rollingDates[6],rollingWindowEnd:selectedDay,
+   limitMinutes,completed7DaysMinutes:rollingCompletedMinutes,reserve7DaysMinutes:rollingReserveMinutes,
+   remainingForIOMinutes:limitMinutes-rollingCompletedMinutes-rollingReserveMinutes,
+   daily:Object.entries(entries).sort(([a],[b])=>a.localeCompare(b)).map(([date,hours])=>({
+    date,completedMinutes:hours.a,reserveMinutes:hours.r,
+    completedBlockCount:itemized.filter(b=>b.date===date&&b.kind==='a').length,
+    canceledReserveCount:itemized.filter(b=>b.date===date&&b.kind==='c').length,
+    pendingReserveCount:itemized.filter(b=>b.date===date&&b.kind==='r').length,
+    itemizedCompletedMinutes:itemized.filter(b=>b.date===date&&b.kind==='a').reduce((t,b)=>t+minutes(b.start,b.end),0)
+   }))};
+  const payload={version:BACKUP_VERSION,app:'flex-rolling-7-days',exportedAt:now.toISOString(),
+   entries,blocks:itemized,baseline,settledDates:settled,
+   preferences:{cap:Number($('cap').value)||40,selectedDay},summary,...(window.flexFinanceExport?.()||{})};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');
+  const hhmmss=[now.getHours(),now.getMinutes(),now.getSeconds()].map(n=>String(n).padStart(2,'0')).join('');
+  link.href=url;link.download='flex-rolling-update-v3-'+iso(now)+'-'+hhmmss+'.json';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
+ }catch(err){alert('Không thể xuất JSON: '+err.message)}
+}
+async function importFullBackup(file){
+ if(!file)return;
+ try{
+  if(file.size>15*1024*1024)throw Error('File sao lưu quá lớn (tối đa 15 MB).');
+  const payload=JSON.parse(await file.text());
+  if(!payload||![2,3].includes(Number(payload.version)))throw Error('Chỉ hỗ trợ bản sao JSON v2 hoặc v3.');
+  const restoredEntries=cleanEntries(payload.entries);
+  const restoredBlocks=Number(payload.version)===3?cleanBlocks(payload.blocks):[];const restoredBaseline=payload.baseline&&typeof payload.baseline==='object'&&!Array.isArray(payload.baseline)?payload.baseline:{};const restoredSettled=payload.settledDates&&typeof payload.settledDates==='object'&&!Array.isArray(payload.settledDates)?payload.settledDates:{};
+  const pref=payload.preferences||{};
+  const cap=Number(pref.cap),day=pref.selectedDay;
+  const message='Khôi phục JSON v'+payload.version+' với '+Object.keys(restoredEntries).length+' ngày và '+restoredBlocks.length+' block.\n\nDữ liệu giờ chạy, Reserve và lịch sử hiện tại trên thiết bị sẽ bị THAY THẾ. Hãy sao lưu bản hiện tại trước.\n\n'+(Number(payload.version)===2?'Lưu ý: JSON v2 không chứa lịch sử từng block; lịch sử hiện tại sẽ bị thay thế bằng danh sách trống.\n\n':'')+(session?'Bạn đang đăng nhập Supabase: bản khôi phục có thể được tải lên cloud ở lần đồng bộ tiếp theo.\n\n':'')+'Tiếp tục?';
+  if(!confirm(message))return;
+  // Validate optional finance fields before changing the legacy Rolling stores.
+  if(window.flexFinanceValidate)window.flexFinanceValidate(payload);
+  // Validate everything before any writes. Restore both stores together, then refresh.
+  flexStorage.setItem(KEY,JSON.stringify(restoredEntries));
+  records=restoredBlocks;
+  baseline=restoredBaseline;settled=restoredSettled;
+  flexStorage.setItem(BLOCKKEY,JSON.stringify(records));
+  flexStorage.setItem(BASEKEY,JSON.stringify(baseline));
+  flexStorage.setItem(SETTLEDKEY,JSON.stringify(settled));
+  if(Number.isFinite(cap)&&cap>=1&&cap<=168)$('cap').value=String(cap);
+  if(typeof day==='string'&&safeDate(day))$('day').value=day;
+  reconcileActiveReserves();
+  if(window.flexRefresh)window.flexRefresh();
+  renderExtra();
+  if(session)queueSync();
+  if(window.flexFinanceImport)window.flexFinanceImport(payload);
+  alert('Đã khôi phục thành công dữ liệu JSON v'+payload.version+'.');
+ }catch(err){alert('Không thể khôi phục: '+err.message)}
+ finally{$('importFile').value=''}
+}
+$('export').onclick=exportFullBackup;
+$('importBtn').onclick=()=>$('importFile').click();
+$('importFile').onchange=e=>importFullBackup(e.target.files?.[0]);
+const backupHelp=document.createElement('p');backupHelp.className='muted';backupHelp.textContent='Sửa giờ xong → bấm Cập nhật & xuất JSON → gửi file .json vừa tải cho ChatGPT. File gồm tổng giờ từng ngày, Reserve, lịch sử block, ngày đã chốt và bảng tóm tắt Rolling 7 ngày. Dữ liệu đã được tự lưu trên máy trước đó; nút này chỉ tạo bản xuất mới nhất. Không tự gửi dữ liệu đi và không lưu ảnh hoặc mật khẩu Supabase.';
+$('export').closest('.card').append(backupHelp);
+
+reconcileActiveReserves();
+renderExtra();
+})();
+</script>
+<!-- BEGIN isolated Income + Healthcare modules; Rolling algorithms unchanged -->
+<style>
+#flex-income-card .fin-line,#flex-health-card .fin-line{display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding:5px 0}
+.fin-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+.fin-tile{background:#eff6fb;border-radius:12px;padding:12px;min-width:0}.fin-tile small{display:block;color:#607789;font-size:12px;line-height:1.45}.fin-tile strong{display:block;color:#173955;font-size:clamp(18px,4.8vw,24px);line-height:1.45;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.fin-inputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}.fin-inputs>*{min-width:0}.fin-inputs input{width:100%;max-width:100%;box-sizing:border-box;font-size:16px;min-width:0;display:block}.fin-date-full,.fin-date-row,.fin-date-field{width:100%;max-width:100%;min-width:0}.fin-date-full{margin:12px 0}.fin-date-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}.fin-date-row>div,.fin-date-field{min-width:0;overflow:hidden}.fin-date-full input[type=date],.fin-date-row input[type=date]{display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;-webkit-appearance:none;appearance:none;font-size:16px;line-height:1.25;padding:12px;border:1px solid #c8d9e4;border-radius:9px;background:white;color:#17324a;min-height:48px}.fin-date-full input[type=date]::-webkit-calendar-picker-indicator,.fin-date-row input[type=date]::-webkit-calendar-picker-indicator{opacity:.9;flex:0 0 auto}.fin-date-full input[type=date]::-webkit-date-and-time-value,.fin-date-row input[type=date]::-webkit-date-and-time-value{min-width:0;text-align:left}.fin-date-full input[type=date]::-webkit-datetime-edit,.fin-date-row input[type=date]::-webkit-datetime-edit{min-width:0;padding:0;overflow:hidden}@media(max-width:430px){.fin-date-row{grid-template-columns:1fr}}
+.fin-actions{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.fin-actions button{flex:1;min-width:140px}
+.fin-review-row{border:1px solid #d7e6ee;border-radius:12px;padding:11px;margin:10px 0;background:white}.fin-review-row .fin-inputs{margin:5px 0}
+.fin-review-row label{display:block;font-size:12px;color:#48647a;margin:5px 0}.fin-review-row input{width:100%;max-width:100%;box-sizing:border-box;font-size:16px}
+/* iPhone OCR earnings review: iOS native date/time controls can exceed a half-width grid cell.
+   Each date/time field gets a dedicated full-width row; monetary fields stay two-column.
+   This CSS is scoped to the income OCR review and never changes Rolling calculations. */
+.fin-ocr-diagnostics{margin:9px 0}.fin-ocr-diagnostics summary{cursor:pointer;font-size:13px;font-weight:700;color:#154460}#fin-income-review-audit,#fin-income-ocr-warnings{white-space:pre-line;overflow-wrap:anywhere;line-height:1.6;margin:8px 0;padding:10px;background:#f3f8fb;border-radius:10px} .fin-review-row,.fin-review-row .fin-inputs,.fin-review-row .fin-inputs>div{min-width:0;max-width:100%}
+.fin-review-row .fin-inputs input[type="date"],.fin-review-row .fin-inputs input[type="time"]{display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;font-size:16px;line-height:1.3;min-height:44px;-webkit-appearance:none;appearance:none}
+.fin-review-row .fin-inputs input[type="date"]::-webkit-date-and-time-value,.fin-review-row .fin-inputs input[type="time"]::-webkit-date-and-time-value{min-width:0;text-align:left}
+.fin-review-row .fin-inputs input[type="date"]::-webkit-datetime-edit,.fin-review-row .fin-inputs input[type="time"]::-webkit-datetime-edit{min-width:0;padding:0}
+@media(max-width:600px){
+ .fin-review-trip .fin-inputs>div:nth-child(-n+3),.fin-review-special .fin-inputs>div:first-child{grid-column:1/-1}
+ .fin-review-row .fin-inputs{gap:10px}
+}
+
+.fin-status{font-size:12px;color:#557083;line-height:1.6}.fin-good{color:#008264!important}.fin-bad{color:#bb342a!important}.fin-strong{font-weight:800;font-variant-numeric:tabular-nums}
+.fin-goal{border:1px solid #d6e6ed;border-radius:12px;padding:12px;min-width:0;background:#fbfdff}.fin-goal strong{font-size:clamp(19px,5vw,24px);white-space:nowrap}.fin-goal .fin-label{font-size:12px;color:#557083}
+.fin-mini{font-size:12px;color:#58758a}.fin-review-count{font-weight:750;padding:8px 0}
+/* Optional Income-only data management. Never touches completed hours or Healthcare stores. */
+.fin-delete-tools{margin-top:12px}.fin-delete-tools>summary{font-size:14px!important;font-weight:700!important}
+.fin-delete-note{font-size:12px;color:#64798b;line-height:1.55;margin:10px 0}
+.fin-history-day{padding:9px 0;border-bottom:1px solid #e0eaf1}.fin-history-day:last-child{border-bottom:0}
+.fin-history-manage{margin-top:6px}.fin-history-manage>summary{font-size:12px!important;color:#456b82;font-weight:650!important;cursor:pointer}
+.fin-delete-entry{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px dashed #dde8ef;font-size:12px}
+.fin-delete-entry>span{min-width:0;overflow-wrap:anywhere}.fin-delete-entry button{font-size:12px;padding:7px 12px;flex:none}
+.fin-delete-day{margin:10px 0 4px;font-size:12px;padding:8px 12px}
+#fin-income-delete-status{min-height:1em;margin-top:8px;overflow-wrap:anywhere}
+#fin-income-undo[hidden]{display:none!important}
+
+#flex-income-card details>summary,#flex-health-card details>summary{cursor:pointer;font-weight:750;font-size:20px;line-height:1.4}
+#flex-income-card details>summary::marker,#flex-health-card details>summary::marker{color:#607789}
+#fin-income-review[hidden],#fin-manual-fields[hidden]{display:none!important}
+@media(max-width:370px){.fin-cols{gap:7px}.fin-tile{padding:9px}.fin-goal{padding:9px}.fin-goal strong{font-size:19px}}
+
+.fin-ref-row{background:#f6fafc;border:1px solid #dce8ef;border-radius:12px;padding:12px;margin:10px 0;min-width:0;overflow:hidden}.fin-ref-head{font-weight:700;font-size:13px}.fin-ref-row label{min-width:0}.fin-ocr-source{background:#fff;border:1px solid #d7e6ee;border-radius:10px;padding:9px;margin:9px 0}.fin-ocr-image{display:block;width:100%;height:auto;max-height:400px;object-fit:contain;margin:8px auto;border-radius:8px}.fin-ocr-raw{font-size:11px;white-space:pre-wrap;overflow-wrap:anywhere;max-height:220px;overflow:auto;background:#f3f7f9;border-radius:8px;padding:9px}.fin-audit-check .fin-inputs>*{min-width:0}.fin-audit-check input{max-width:100%;min-width:0}
+/* Compact income review: leave Rolling and Healthcare CSS untouched. */
+#fin-income-reference-wrap,#fin-income-review-audit,.fin-ocr-diagnostics{display:none!important}
+.fin-day-breakdown{display:grid;gap:5px;margin-top:7px}
+.fin-day-breakdown .fin-line{padding:0!important;font-size:12px}
+.fin-day-breakdown b{font-size:14px}.fin-income-pending{color:#a06916!important}
+.fin-simple-day{padding:10px;border:1px solid #d9e7ef;border-radius:11px;margin:8px 0;background:#f8fbfd}
+.fin-simple-day>div:first-child{display:flex;justify-content:space-between;gap:6px;font-weight:750;font-size:13px}
+.fin-simple-day .fin-mini{line-height:1.6}
+#flex-income-card .fin-review-row>summary{font-size:13px!important;cursor:pointer;font-weight:700;line-height:1.55;overflow-wrap:anywhere}
+.fin-review-row.fin-pending{border-color:#edcf96;background:#fffaf1}
+.fin-review-row.fin-pending>summary{color:#835712}
+.fin-review-row>summary+.fin-inputs{margin-top:12px}
+.fin-status-select{display:block;max-width:100%;width:100%;font-size:16px}
+
+/* UI-only income layout refinement, 2026-10-18. Keep all application logic and stores intact. */
+#flex-income-card .fin-tile.fin-wide{grid-column:1 / -1;}
+#flex-income-card .fin-month-split{display:grid;gap:8px;margin-top:9px;}
+#flex-income-card .fin-month-split .fin-month-line{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:clamp(13px,3.4vw,16px);line-height:1.35;min-width:0;}
+#flex-income-card .fin-month-split .fin-month-line b{font-size:clamp(17px,4.2vw,24px);font-variant-numeric:tabular-nums;white-space:nowrap;}
+#flex-income-card .fin-month-split .fin-base{color:#148343;}
+#flex-income-card .fin-month-split .fin-tips{color:#196ec7;}
+#flex-income-card .fin-day-breakdown .fin-line{display:flex;align-items:baseline;justify-content:space-between;gap:8px;}
+#flex-income-card .fin-day-breakdown .fin-line b{white-space:nowrap;}
+#flex-income-card #fin-income-unfinished{margin-top:8px;}
+@media(max-width:390px){#flex-income-card .fin-month-split .fin-month-line{gap:4px;font-size:13px}#flex-income-card .fin-month-split .fin-month-line b{font-size:clamp(16px,4.6vw,20px)}}
+</style>
+<section class="card" id="flex-income-card"><details open><summary>Thu nhập · Ngày / Tuần / Tháng / $ mỗi giờ</summary>
+<p class="note">Thu nhập gồm <b>Base + Tips, Earnings Adjustment, Additional Tips và Healthcare Subsidy đã trả</b>. Không cộng Instant Cash Out hay Payment sent. Ảnh <b>Tips pending</b> được lưu thành tiền tạm tính, không cộng vào thu nhập đã chốt. Không thay đổi giờ Rolling.</p>
+<div class="fin-cols">
+<div class="fin-tile"><small>Tiền ngày đang xem</small><strong id="fin-income-day">—</strong><div id="fin-income-day-breakdown" class="fin-day-breakdown"><div class="fin-line"><span>Đã chốt</span><b id="fin-day-paid">$0.00</b></div><div class="fin-line"><span>Chờ Tips</span><b id="fin-day-pending" class="fin-income-pending">$0.00</b></div><div class="fin-line"><span>Tổng tạm tính</span><b id="fin-day-estimate">$0.00</b></div></div><div class="fin-mini" id="fin-income-day-split">Base / Tips: —</div></div>
+<div class="fin-tile"><small>Tiền tuần (T2–CN)</small><strong id="fin-income-week">—</strong><div class="fin-mini" id="fin-income-week-split">Base / Tips: —</div></div>
+<div class="fin-tile"><small>Tiền tháng hiện tại</small><strong id="fin-income-month">—</strong></div>
+<div class="fin-tile"><small>Base / Tips (tháng)</small><div id="fin-income-split" class="fin-month-split"><div class="fin-month-line fin-base"><span>Base:</span><b id="fin-month-base">—</b></div><div class="fin-month-line fin-tips"><span>Tips:</span><b id="fin-month-tips">—</b></div></div></div><div class="fin-tile"><small>Adjustment / Tips thêm / Healthcare (tháng)</small><strong id="fin-income-specials">—</strong><div class="fin-mini" id="fin-income-special-breakdown">Adjustment: — · Tips thêm: — · Healthcare: —</div></div>
+<div class="fin-tile"><small>Trung bình / giờ (gồm các khoản cộng thêm)</small><strong id="fin-income-rate">—</strong></div>
+<div class="fin-tile fin-wide"><small>Ngày đã chạy chưa chốt tiền (trong tuần)</small><strong id="fin-income-unfinished">—</strong></div>
+</div>
+<details class="flex-panel" id="fin-special-ledger"><summary>Chi tiết / Khôi phục khoản cộng thêm</summary>
+<div class="fin-status" id="fin-special-ledger-detail">Đang kiểm tra giao dịch đã lưu…</div>
+<div class="fin-status" id="fin-special-safety-status"></div>
+<div class="fin-actions"><button type="button" class="secondary" id="fin-special-add-health">＋ Bổ sung Healthcare đã thanh toán</button><button type="button" class="secondary" id="fin-special-restore" hidden>↶ Khôi phục khoản cộng thêm từ bản lưu an toàn</button></div>
+<div class="fin-status">Nếu giao dịch chưa có trong ứng dụng và không còn bản lưu an toàn, hãy upload lại ảnh Earnings hoặc nhập đúng ngày và số tiền Amazon đã thanh toán. Không tự tạo khoản tiền chưa xác minh.</div>
+</details>
+<details class="flex-panel" id="fin-income-integrity-wrap" hidden><summary id="fin-income-integrity-title">⚠️ Cần kiểm tra chuyến đã lưu</summary><div class="fin-status" id="fin-income-integrity-body"></div></details>
+<div class="fin-actions"><button id="fin-income-upload" type="button">📷 Upload Earnings</button><button id="fin-income-add" class="secondary" type="button">＋ Nhập chuyến</button><button id="fin-income-add-special" class="secondary" type="button">＋ Nhập khoản cộng thêm</button></div>
+<div id="fin-income-source" hidden class="flex-panel" style="margin:10px 0">
+<b>Chọn nơi lấy ảnh Earnings</b>
+<div class="fin-actions"><button type="button" class="secondary" id="fin-income-source-photos">🖼️ Ảnh / Google Photos</button><button type="button" id="fin-income-source-files">📁 My Files / Screenshots</button></div>
+</div>
+<input type="file" id="fin-income-images" accept="image/*" multiple hidden>
+<div class="fin-status" id="fin-income-status">Chưa chọn ảnh. Có thể upload nhiều ảnh của các ngày đã qua trong cùng một lần.</div>
+<div id="fin-income-review" hidden>
+<h3 style="margin:12px 0">Xem trước Earnings</h3>
+<div class="fin-status">Các ảnh trùng được kiểm tra tự động. Chuyến <b>Chờ Tips</b> lưu tạm và sẽ được thay bằng tiền <b>Paid</b> khi bạn upload ảnh ngày hôm sau. Chạm một dòng để chỉnh; mở ảnh gốc nếu cần.</div><div id="fin-income-simple-days"></div>
+<div id="fin-income-review-list"></div>
+<div class="fin-actions"><button type="button" id="fin-income-more" class="secondary">＋ Thêm ảnh</button><button type="button" id="fin-income-more-manual" class="secondary">＋ Thêm chuyến</button><button type="button" id="fin-income-more-special" class="secondary">＋ Thêm khoản khác</button></div>
+<div id="fin-income-review-summary" class="fin-review-count"></div>
+<details class="flex-panel fin-audit-check" id="fin-income-reference-wrap" open>
+<summary>🔎 Đối chiếu tổng tiền và số chuyến theo ngày trước khi lưu</summary>
+<p class="fin-status">Nhìn ảnh Amazon rồi điền <b>số chuyến Paid</b> và <b>tổng tiền của ngày</b> (gồm khoản Adjustment / Healthcare nếu có). Có thể bỏ trống để lưu tạm. Chỉ đánh dấu đủ tiền khi các số đối chiếu khớp; OCR không tự chứng minh đã đọc hết ảnh.</p>
+<div id="fin-income-reference-list"></div><div id="fin-income-month-reference-list"></div>
+<div id="fin-income-reference-status" class="fin-status" aria-live="polite"></div>
+</details>
+<details class="flex-panel" id="fin-income-images-preview" hidden><summary>🖼️ Xem lại ảnh đã upload và phần OCR đọc được</summary><div id="fin-income-image-list"></div></details>
+<div id="fin-income-review-audit" class="fin-status" aria-live="polite"></div>
+<details class="fin-ocr-diagnostics"><summary>Kiểm tra OCR từng ảnh / cảnh báo</summary><div id="fin-income-ocr-warnings" class="fin-status"></div></details>
+<label style="display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.55"><input type="checkbox" id="fin-income-confirm" style="width:20px;height:20px;flex:none;margin-top:2px"> Tôi đã xem danh sách giao dịch nhận diện; khoản Chờ Tips chỉ tính tạm.</label>
+<div class="fin-actions"><button id="fin-income-save" type="button">Lưu thu nhập đã kiểm tra</button><button id="fin-income-cancel" type="button" class="secondary">Đóng</button></div>
+</div>
+<div class="flex-panel" id="fin-income-retention"><div class="fin-line"><b id="fin-income-current-month">Tháng hiện tại</b><span id="fin-income-retention-label">—</span></div><div class="fin-status" id="fin-income-retention-status">Giữ tháng trước thêm 7 ngày; sau đó chỉ dọn khi đủ Tips.</div></div>
+<details class="flex-panel" id="fin-income-prior-wrap" hidden><summary id="fin-income-prior-title">Tháng trước · Tạm giữ</summary><div class="fin-status" id="fin-income-prior-status"></div><div id="fin-income-prior"></div></details>
+<p class="fin-status">Đối với khoản không có giờ chạy, ứng dụng chống trùng bằng loại + ngày + số tiền; nếu Amazon có hai khoản giống hệt nhau, hãy kiểm tra lại vì không có mã giao dịch để phân biệt tuyệt đối.</p>
+<details class="flex-panel fin-delete-tools" id="fin-income-delete-tools"><summary>Quản lý / Xóa dữ liệu Thu nhập</summary>
+<p class="fin-delete-note">Có thể xóa toàn bộ tiền để upload lại ảnh. Chỉ xóa dữ liệu <b>Thu nhập</b>, không ảnh hưởng <b>giờ Rolling</b> hoặc <b>Healthcare Subsidy</b>. Nên xuất Backup JSON trước khi xóa.</p>
+<div class="fin-actions"><button id="fin-income-delete-selected" class="secondary" type="button">Xóa tiền ngày đang xem</button><button id="fin-income-delete-all" class="danger" type="button">🗑️ Xóa toàn bộ thu nhập đã lưu</button><button id="fin-income-undo" class="secondary" type="button" hidden>↶ Hoàn tác lần xóa vừa rồi</button></div>
+<div class="fin-status" id="fin-income-delete-status" role="status" aria-live="polite"></div>
+</details>
+<details class="flex-panel"><summary>Chi tiết tiền đã lưu</summary>
+<p class="fin-status">Nếu một ngày OCR thiếu chuyến, hãy xóa <b>chỉ ngày đó</b> rồi upload lại; dữ liệu các ngày khác được giữ. Bạn cũng có thể xóa đúng một chuyến hoặc xóa toàn bộ thu nhập.</p>
+<div id="fin-income-history"></div></details>
+</details></section>
+<section class="card" id="flex-health-card"><details open><summary>Healthcare Subsidy · Buffer / EST</summary><p class="note" id="fin-h-quarter-label">Chỉ theo dõi quý hiện tại; quý trước giữ thêm 7 ngày.</p><div id="fin-h-old-quarter" class="fin-status" hidden></div>
+<div class="fin-cols">
+<div class="fin-tile"><small>Amazon xác nhận</small><strong id="fin-h-confirmed">—</strong><div class="fin-mini" id="fin-h-asof"></div></div>
+<div class="fin-tile"><small>Ước tính hiện tại</small><strong id="fin-h-estimated">—</strong><div class="fin-mini">Giờ Amazon + Completed chưa cập nhật</div></div>
+</div>
+<div class="flex-panel"><b>Cập nhật giờ Amazon</b><div class="fin-inputs"><div><label for="fin-h-hours">Tổng giờ (h)</label><input id="fin-h-hours" type="number" min="0" max="3000" step="1" placeholder="69"></div><div><label for="fin-h-minutes">Phút (0–59)</label><input id="fin-h-minutes" type="number" min="0" max="59" step="1" placeholder="58"></div></div><div class="fin-date-full"><label for="fin-h-date">Amazon ghi nhận đến ngày (As of)</label><input id="fin-h-date" type="date"></div><div class="fin-actions"><button id="fin-h-save" type="button">Lưu giờ Amazon</button></div><div class="fin-status" id="fin-h-status">Chỉ cập nhật khi Amazon thay đổi số giờ. Không làm thay đổi Rolling.</div></div>
+<div class="flex-panel"><b>Dự định nghỉ · From / To</b><div class="fin-date-row"><div class="fin-date-field"><label for="fin-h-from">From · Từ ngày</label><input id="fin-h-from" type="date"></div><div class="fin-date-field"><label for="fin-h-to">To · Đến ngày</label><input id="fin-h-to" type="date"></div></div><div class="fin-actions"><button id="fin-h-rest-save" type="button">Lưu ngày nghỉ</button><button id="fin-h-rest-clear" class="secondary" type="button">Xóa lịch nghỉ</button></div><div class="fin-status" id="fin-h-rest-status">Lịch nghỉ chỉ dùng để dự báo, không đặt ngày nghỉ vào Rolling.</div></div>
+<h3 style="margin:12px 0 8px">Buffer & Ngày dự kiến đạt mốc</h3>
+<div class="fin-cols"><div class="fin-goal" id="fin-h-goal197"></div><div class="fin-goal" id="fin-h-goal328"></div></div>
+<details class="flex-panel"><summary>ⓘ Lưu ý</summary><p class="fin-status">Buffer và EST chỉ mang tính ước tính theo tiến độ hiện tại. Giờ Completed trong app có thể khác giờ đủ điều kiện Healthcare Subsidy của Amazon. Dự báo tính theo ngày lịch, loại các ngày nghỉ dự kiến; không đảm bảo sẽ nhận trợ cấp. Proof of coverage phải đáp ứng điều kiện của Amazon.</p></details>
+</details></section>
+<script>
+(()=>{'use strict';
+// Isolated read-only consumer of the existing Rolling stores. Do not write flex-rolling-v2 / block / baseline / settled keys.
+const MONEYKEY='flex-income-final-v1',HEALTHKEY='flex-healthcare-progress-v1',ROLLINGKEY='flex-rolling-v2',SPECIALSAFEKEY='flex-income-special-safety-v1';
+const $=id=>document.getElementById(id);
+const read=(key,otherwise)=>{try{const x=JSON.parse(flexStorage.getItem(key));return x===null?otherwise:x}catch{return otherwise}};
+const pad=x=>String(x).padStart(2,'0');
+const localISO=date=>`${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}`;
+const today=()=>localISO(new Date());
+const parseDate=s=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(s||''))return null;const d=new Date(Number(s.slice(0,4)),Number(s.slice(5,7))-1,Number(s.slice(8)),12);return localISO(d)===s?d:null};
+const nextDay=(date,offset)=>{const d=parseDate(date);if(!d)return null;d.setDate(d.getDate()+offset);return localISO(d)};
+const dayCount=(a,b)=>{const x=parseDate(a),y=parseDate(b);return x&&y?Math.round((y-x)/86400000)+1:0};
+const quarter=(date)=>{const d=parseDate(date)||new Date(),y=d.getFullYear(),q=Math.floor(d.getMonth()/3),from=`${y}-${pad(1+q*3)}-01`,to=localISO(new Date(y,q*3+3,0,12));return {key:y+'-Q'+(q+1),from,to,days:dayCount(from,to)}};
+const fmtMinutes=m=>{m=Math.max(0,Math.round(m||0));return Math.floor(m/60)+'h'+pad(m%60)+'m'};
+const fmtMoney=c=>'$'+(Math.round(c)/100).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const prettyDate=s=>s?`${s.slice(8)}/${s.slice(5,7)}/${s.slice(0,4)}`:'—';
+const rolling=()=>read(ROLLINGKEY,{});
+const validMoney=r=>r&&parseDate(r.date)&&/^([01]\d|2[0-3]):[0-5]\d$/.test(r.start||'')&&/^([01]\d|2[0-3]):[0-5]\d$/.test(r.end||'')&&r.end>r.start&&Number.isSafeInteger(r.cents)&&r.cents>=0&&r.cents<=100000000;
+const incomeLoad=()=>{const o=read(MONEYKEY,{version:3,records:[],finalDays:[],specials:[],pendingRecords:[]});return o&&Array.isArray(o.records)&&Array.isArray(o.finalDays)?{...o,specials:Array.isArray(o.specials)?o.specials:[],pendingRecords:Array.isArray(o.pendingRecords)?o.pendingRecords:[]}: {version:3,records:[],finalDays:[],specials:[],pendingRecords:[]}};
+const specialLabels={adjustment:'Earnings Adjustment',extra_tips:'Additional Tips',health_subsidy:'Healthcare Subsidy'};
+const specialKey=r=>r.date+'|'+r.specialType+'|'+r.cents;
+const validSpecial=r=>!!(r&&parseDate(r.date)&&Object.hasOwn(specialLabels,r.specialType)&&Number.isSafeInteger(r.cents)&&r.cents>0&&r.cents<=100000000);
+const allIncomeRecords=data=>[...data.records,...data.specials];
+// Small separate receipt safety ledger: protects previously scanned paid extras across JSON imports
+// and mistaken income resets. Never silently restore a deleted receipt or modify Rolling/Healthcare.
+const specialArchiveLoad=()=>{const value=read(SPECIALSAFEKEY,{records:[]});return Array.isArray(value?.records)?value.records.filter(validSpecial):[];};
+function archiveIncomeSpecials(items){
+ const old=specialArchiveLoad(),out=new Map(old.map(r=>[specialKey(r),r]));
+ for(const r of items||[])if(validSpecial(r))out.set(specialKey(r),{date:r.date,specialType:r.specialType,cents:r.cents});
+ if(out.size!==old.length)flexStorage.setItem(SPECIALSAFEKEY,JSON.stringify({version:1,records:[...out.values()]}));
+}
+const missingArchivedSpecials=data=>{const current=new Set(data.specials.map(specialKey));return specialArchiveLoad().filter(r=>!current.has(specialKey(r))&&ym(r.date)===ym(today()));};
+function pruneSpecialArchive(){
+ const existing=specialArchiveLoad(),data=incomeLoad(),entries=rolling();
+ const records=existing.filter(r=>{const month=ym(r.date);return month>=ym(today())||today()<(monthPurgeDate(month)||'9999-12-31')||incompleteMonth(month,data,entries).length>0;});
+ if(records.length!==existing.length)flexStorage.setItem(SPECIALSAFEKEY,JSON.stringify({version:1,records}));
+}
+
+const ym=d=>d.slice(0,7);
+const monthLabel=k=>k&&/^\d{4}-\d{2}$/.test(k)?k.slice(5)+'/'+k.slice(0,4):'—';
+const monthAfter=k=>{const d=parseDate(k+'-01');if(!d)return null;d.setMonth(d.getMonth()+1);return localISO(d).slice(0,7)};
+const monthPurgeDate=k=>{const next=monthAfter(k);return next?next+'-08':null};
+const incomeMonths=data=>[...new Set([...allIncomeRecords(data),...data.pendingRecords].map(r=>ym(r.date)).concat(data.finalDays.map(ym)))].filter(m=>/^\d{4}-(0[1-9]|1[0-2])$/.test(m)).sort();
+const incompleteMonth=(k,data,entries)=>[...new Set([...Object.entries(entries).filter(([date,v])=>ym(date)===k&&Number(v?.a)>0&&!data.finalDays.includes(date)).map(([date])=>date),...data.pendingRecords.filter(r=>ym(r.date)===k).map(r=>r.date)])].sort();
+function pruneIncome(){const data=incomeLoad(),current=ym(today()),entries=rolling();const months=incomeMonths(data);let expired=[];
+ for(const m of months){if(m>=current||today()<(monthPurgeDate(m)||'9999-12-31'))continue;
+  // Amazon does not expose a final-Tips flag: completed workdays not confirmed via Earnings block deletion.
+  if(incompleteMonth(m,data,entries).length===0)expired.push(m);
+ }
+ if(expired.length){const old=data.records.length+data.finalDays.length+data.specials.length+data.pendingRecords.length;data.records=data.records.filter(r=>!expired.includes(ym(r.date)));data.specials=data.specials.filter(r=>!expired.includes(ym(r.date)));data.pendingRecords=data.pendingRecords.filter(r=>!expired.includes(ym(r.date)));data.finalDays=data.finalDays.filter(d=>!expired.includes(ym(d)));
+  if(old!==data.records.length+data.finalDays.length+data.specials.length+data.pendingRecords.length)flexStorage.setItem(MONEYKEY,JSON.stringify(data));
+ }
+ return data;}
+
+const hcLoad=()=>{const q=quarter(today()),store=read(HEALTHKEY,{});
+ const o=store?.quarters?.[q.key]||(store?.quarter===q.key?store:null);
+ return o?{quarter:q.key,confirmedMinutes:o.confirmedMinutes??null,asOf:o.asOf||'',vacationFrom:o.vacationFrom||'',vacationTo:o.vacationTo||''}:{quarter:q.key,confirmedMinutes:null,asOf:'',vacationFrom:'',vacationTo:''};};
+const hcStore=()=>{const o=read(HEALTHKEY,{});if(o&&o.quarters&&typeof o.quarters==='object'&&!Array.isArray(o.quarters))return o;
+ return {version:1,quarters:o?.quarter?{[o.quarter]:o}:{}};};
+const hcSave=h=>{const store=hcStore();store.quarters[h.quarter]=h;flexStorage.setItem(HEALTHKEY,JSON.stringify(store));};
+function pruneHealthcare(){const store=hcStore(),now=today(),current=quarter(now).key;let changed=false;
+ for(const key of Object.keys(store.quarters)){
+  if(!/^20\d{2}-Q[1-4]$/.test(key)){delete store.quarters[key];changed=true;continue}
+  const y=Number(key.slice(0,4)),n=Number(key.slice(-1));const end=localISO(new Date(y,n*3,0,12));
+  // Q4 ends Dec 31; retain Jan 1–7, delete beginning Jan 8.
+  if(key!==current&&now>=nextDay(end,8)){delete store.quarters[key];changed=true}
+ }
+ if(changed)flexStorage.setItem(HEALTHKEY,JSON.stringify(store));return store;
+}
+function pruneExpired(){archiveIncomeSpecials(incomeLoad().specials);pruneIncome();pruneSpecialArchive();pruneHealthcare();}
+
+const totalDays=(entries,from,to)=>Object.entries(entries).reduce((sum,[d,v])=>sum+(d>=from&&d<=to&&v&&Number.isSafeInteger(Number(v.a))&&Number(v.a)>0?Number(v.a):0),0);
+const monday=s=>{let d=parseDate(s)||new Date();d.setDate(d.getDate()-(d.getDay()+6)%7);return localISO(d)};
+const duration=(start,end)=>{const [h,m]=start.split(':').map(Number),[h2,m2]=end.split(':').map(Number);return h2*60+m2-h*60-m};
+const recordKey=r=>r.kind==='special'?'special|'+specialKey(r):r.date+'|'+r.start+'|'+r.end;
+const validIncome=r=>validMoney(r)&&['baseCents','tipsCents'].every(k=>r[k]===null||r[k]===undefined||(Number.isSafeInteger(r[k])&&r[k]>=0&&r[k]<=100000000))&&(!Number.isSafeInteger(r.baseCents)||!Number.isSafeInteger(r.tipsCents)||r.baseCents+r.tipsCents===r.cents);
+const validReview=r=>r.kind==='special'?validSpecial(r):validIncome(r);
+
+// Keep existing paid deliveries; compare the complete saved+new union to the
+// completed duration in Rolling without modifying the Rolling source.
+// This comparison cannot guarantee OCR completeness, but can catch omissions.
+function incomeReviewCompleteness(rows,old=incomeLoad(),entries=rolling()){
+ const newDeliveries=rows.filter(r=>r.kind!=='special'&&validIncome(r)), dates=[...new Set(newDeliveries.map(r=>r.date))];
+ const merged=new Map(old.records.map(r=>[recordKey(r),r]));
+ for(const r of newDeliveries)merged.set(recordKey(r),r);
+ return dates.map(date=>{
+  const expected=Number(entries[date]?.a)||0;
+  const paid=[...merged.values()].filter(r=>r.date===date&&validMoney(r));
+  const minutes=paid.reduce((n,r)=>n+duration(r.start,r.end),0);
+  const missing=Math.max(0,expected-minutes),incomplete=expected>0&&missing>12;
+  return {date,expected,minutes,missing,count:paid.length,incomplete};
+ });
+}
+
+let review=[],busy=false,appendImages=false,blockedPending=0,dupReview=0,healthInputsDirty=false,vacInputsDirty=false;
+let incomeOCRIssues=[],incomePendingDates=new Set(),incomePendingKeys=new Set(),incomeOCRDayNotes=[];
+// In-session review-only source evidence and user-supplied per-day reconciliation.
+// Do not save pictures to localStorage/JSON.
+let incomeEvidence=[],incomeTargets={},incomeMonthTargets={},incomeProblemDates=new Set(),incomeGlobalProblem=false;
+function clearIncomeEvidence(){for(const it of incomeEvidence){if(it.url)URL.revokeObjectURL(it.url)}incomeEvidence=[];incomeTargets={};incomeMonthTargets={};incomeProblemDates=new Set();incomeGlobalProblem=false;const node=$('fin-income-image-list');if(node)node.replaceChildren();$('fin-income-images-preview').hidden=true}
+function showIncomeEvidence(){const root=$('fin-income-image-list');root.replaceChildren();$('fin-income-images-preview').hidden=!incomeEvidence.length;
+ for(const it of incomeEvidence){const container=document.createElement('details');container.className='fin-ocr-source';const title=document.createElement('summary');title.textContent=it.name+': '+(it.note||'đang xử lý');container.append(title);
+  if(it.url){const pic=document.createElement('img');pic.src=it.url;pic.alt='Ảnh gốc '+it.name;pic.className='fin-ocr-image';pic.loading='lazy';container.append(pic)}
+  if(it.text){const pre=document.createElement('pre');pre.className='fin-ocr-raw';pre.textContent=it.text.slice(0,9000);container.append(pre)}root.append(container)}
+}
+function storedIncomeDay(date,data){const rows=[...data.records.filter(r=>r.date===date),...data.specials.filter(r=>r.date===date)];return {count:data.records.filter(r=>r.date===date).length,cents:rows.reduce((n,r)=>n+r.cents,0)}}
+function mergedIncomeDay(date,reviewRows,data){const deliveries=new Map(data.records.filter(r=>r.date===date).map(r=>[recordKey(r),r]));const specials=new Map(data.specials.filter(r=>r.date===date).map(r=>[specialKey(r),r]));
+ for(const r of reviewRows.filter(r=>r.date===date&&validReview(r))){if(r.kind==='special')specials.set(specialKey(r),r);else deliveries.set(recordKey(r),r)}
+ return {count:deliveries.size,cents:[...deliveries.values(),...specials.values()].reduce((n,r)=>n+r.cents,0)}
+}
+function monthReconciledCents(month,reviewRows,old=incomeLoad()){
+ const deliveries=new Map(old.records.filter(r=>ym(r.date)===month).map(r=>[recordKey(r),r]));const specials=new Map(old.specials.filter(r=>ym(r.date)===month).map(r=>[specialKey(r),r]));
+ for(const r of reviewRows.filter(r=>validReview(r)&&ym(r.date)===month)){if(r.kind==='special')specials.set(specialKey(r),r);else deliveries.set(recordKey(r),r)}
+ return [...deliveries.values(),...specials.values()].reduce((n,r)=>n+r.cents,0)
+}
+function monthReferenceProblems(reviewRows,existing=incomeLoad()){
+ return Object.entries(incomeMonthTargets).filter(([month,cents])=>Number.isSafeInteger(cents)&&reviewRows.some(r=>r.date&&ym(r.date)===month))
+  .filter(([month,cents])=>monthReconciledCents(month,reviewRows,existing)!==cents)
+  .map(([month,cents])=>({month,expected:cents,observed:monthReconciledCents(month,reviewRows,existing)}));
+}
+function referenceProblems(reviewRows,existing=incomeLoad()){const touched=[...new Set(reviewRows.filter(validReview).map(r=>r.date))],results=[];
+ for(const date of touched){const target=incomeTargets[date]||{},observed=mergedIncomeDay(date,reviewRows,existing);const problems=[];
+  if(target.count!==null&&target.count!==undefined&&target.count!==''&&observed.count!==Number(target.count))problems.push('số chuyến '+observed.count+' / '+target.count);
+  if(Number.isSafeInteger(target.cents)&&observed.cents!==target.cents)problems.push('tiền '+fmtMoney(observed.cents)+' / '+fmtMoney(target.cents));
+  if(incomeProblemDates.has(date))problems.push('ảnh có dòng OCR chưa đọc được');
+  if(incomePendingDates.has(date))problems.push('Tips pending');
+  if(problems.length)results.push({date,problems,observed});
+ }return results;
+}
+function renderIncomeReferences(){const root=$('fin-income-reference-list');root.replaceChildren();const data=incomeLoad(),dates=[...new Set(review.filter(validReview).map(r=>r.date))].sort();
+ for(const date of dates){const tally=mergedIncomeDay(date,review,data);const old=storedIncomeDay(date,data),row=document.createElement('div');row.className='fin-ref-row';
+  const headline=document.createElement('div');headline.className='fin-ref-head';headline.textContent=prettyDate(date)+' · sau gộp: '+tally.count+' chuyến / '+fmtMoney(tally.cents)+(old.count?' · đã lưu '+old.count+' chuyến':'');row.append(headline);
+  const grid=document.createElement('div');grid.className='fin-inputs';for(const [label,key,step] of [['Số chuyến Paid trên Amazon','count','1'],['Tổng tiền Amazon ($)','cents','0.01']]){
+   const wrap=document.createElement('div'),lbl=document.createElement('label'),field=document.createElement('input');lbl.textContent=label;field.type='number';field.min='0';field.step=step;field.placeholder=key==='count'?'Ví dụ: 4':'Ví dụ: 373.00';const value=incomeTargets[date]?.[key];field.value=value===null||value===undefined?'':key==='cents'?(value/100).toFixed(2):String(value);
+   field.addEventListener('input',()=>{const inp=field.value.trim();const t=incomeTargets[date]??={};if(!inp)t[key]=null;else if(key==='count')t[key]=Number.isSafeInteger(Number(inp))&&Number(inp)>=0?Number(inp):null;else t[key]=Number.isFinite(Number(inp))&&Number(inp)>=0?Math.round(Number(inp)*100):null;updateIncomeReferenceStatus()});lbl.append(field);wrap.append(lbl);grid.append(wrap)
+  }row.append(grid);root.append(row)
+ }
+ const months=[...new Set(dates.map(ym))].sort(),monthRoot=$('fin-income-month-reference-list');monthRoot.replaceChildren();
+ for(const month of months){const row=document.createElement('div');row.className='fin-ref-row';const label=document.createElement('label');
+  const current=monthReconciledCents(month,review,data);label.textContent='Tổng thu nhập '+monthLabel(month)+' trên Amazon (nếu đã có đủ ảnh) · sau gộp: '+fmtMoney(current);
+  const input=document.createElement('input');input.type='number';input.min='0';input.step='0.01';input.placeholder='Ví dụ: 5456.96';input.value=Number.isSafeInteger(incomeMonthTargets[month])?(incomeMonthTargets[month]/100).toFixed(2):'';
+  input.addEventListener('input',()=>{const v=input.value.trim();incomeMonthTargets[month]=v&&Number.isFinite(Number(v))&&Number(v)>=0?Math.round(Number(v)*100):null;updateIncomeReferenceStatus()});label.append(input);row.append(label);monthRoot.append(row)
+ }
+ updateIncomeReferenceStatus();
+}
+function updateIncomeReferenceStatus(){const problems=referenceProblems(review),months=monthReferenceProblems(review),checks=[...new Set(review.filter(validReview).map(r=>r.date))].filter(d=>{const a=incomeTargets[d];return a&&(a.count!==null&&a.count!==undefined||Number.isSafeInteger(a.cents))}).length;
+ $('fin-income-reference-status').textContent=(problems.length||months.length?'⚠️ KHÔNG KHỚP:\n'+problems.map(p=>prettyDate(p.date)+': '+p.problems.join(', ')).join('\n')+(months.length?'\n'+months.map(m=>'Tháng '+monthLabel(m.month)+': đã có '+fmtMoney(m.observed)+' / Amazon '+fmtMoney(m.expected)+' (chênh '+fmtMoney(Math.abs(m.expected-m.observed))+')').join('\n'):'')+'\nLưu tạm được nhưng ngày thiếu sẽ không được chốt.':'✓ Chưa có sai lệch ở các mốc đã nhập.')+' · '+checks+' ngày đã nhập mốc đối chiếu.';
+ $('fin-income-reference-status').style.whiteSpace='pre-line';$('fin-income-reference-status').style.color=problems.length||months.length?'#ad4430':'';
+}
+
+
+// Only this isolated MONEYKEY is ever changed by Income delete actions.
+// A single-step Undo lives in memory while this page is open (no stale data kept in storage).
+let incomeDeleteUndo=null;
+function resetIncomeDeleteUndo(){incomeDeleteUndo=null;$('fin-income-undo').hidden=true}
+function deleteSavedIncome(mode, date='', identity=''){
+ const data=incomeLoad(),beforeCount=data.records.length+data.specials.length+data.finalDays.length+data.pendingRecords.length;
+ let label='';
+ if(mode==='all'){
+  if(!beforeCount){$('fin-income-delete-status').textContent='Chưa có thu nhập nào để xóa.';return}
+  label='XÓA TOÀN BỘ '+data.records.length+' chuyến Paid, '+data.pendingRecords.length+' chuyến chờ Tips, '+data.specials.length+' khoản cộng thêm và '+data.finalDays.length+' ngày chốt tiền';
+ }else if(mode==='day'){
+  if(!parseDate(date))return;
+  if(!data.records.some(r=>r.date===date)&&!data.pendingRecords.some(r=>r.date===date)&&!data.specials.some(r=>r.date===date)&&!data.finalDays.includes(date))return;
+  label='XÓA TOÀN BỘ THU NHẬP ngày '+prettyDate(date)+' (chuyến, khoản cộng thêm và trạng thái chốt tiền)';
+ }else if(mode==='entry'){
+  const match=[...data.records,...data.pendingRecords,...data.specials].find(r=>(r.specialType?'s|'+specialKey(r):'d|'+recordKey(r))===identity);
+  if(!match)return;
+  label='XÓA '+(match.specialType?(specialLabels[match.specialType]||'khoản cộng thêm'):'chuyến '+match.start+'–'+match.end)+' '+prettyDate(match.date)+' · '+fmtMoney(match.cents);
+ }else return;
+ if(!confirm(label+'?\n\nChỉ xóa dữ liệu THU NHẬP, không thay đổi giờ Rolling hoặc giờ Healthcare. Hãy xuất Backup JSON trước nếu cần lưu lại.'))return;
+ incomeDeleteUndo=JSON.stringify(data);
+ archiveIncomeSpecials(data.specials);
+ if(mode==='all'){
+  data.records=[];data.pendingRecords=[];data.specials=[];data.finalDays=[];
+ }else if(mode==='day'){
+  data.records=data.records.filter(r=>r.date!==date);
+  data.pendingRecords=data.pendingRecords.filter(r=>r.date!==date);
+  data.specials=data.specials.filter(r=>r.date!==date);
+  data.finalDays=data.finalDays.filter(d=>d!==date);
+ }else{
+  const isSpecial=identity.startsWith('s|'),key=identity.slice(2);
+  if(isSpecial)data.specials=data.specials.filter(r=>specialKey(r)!==key);
+  else{
+   data.records=data.records.filter(r=>recordKey(r)!==key);
+   data.pendingRecords=data.pendingRecords.filter(r=>recordKey(r)!==key);
+   // The workday must be verified again after a paid delivery was removed.
+   data.finalDays=data.finalDays.filter(d=>d!==date);
+  }
+ }
+ flexStorage.setItem(MONEYKEY,JSON.stringify(data));
+ // Discard any OCR draft, otherwise stale rows could be saved back accidentally.
+ review=[];blockedPending=0;dupReview=0;incomePendingDates=new Set();incomePendingKeys=new Set();incomeOCRIssues=[];incomeOCRDayNotes=[];clearIncomeEvidence();
+ $('fin-income-review').hidden=true;
+ $('fin-income-undo').hidden=false;
+ $('fin-income-delete-tools').open=true;
+ renderIncome();
+ $('fin-income-delete-status').textContent=(mode==='all'?'Đã xóa toàn bộ thu nhập.':mode==='day'?'Đã xóa thu nhập ngày '+prettyDate(date)+'.':'Đã xóa khoản đã chọn.')+' Có thể upload lại ảnh. Nhấn “Hoàn tác” nếu xóa nhầm (trước khi tải lại trang).';
+ $('fin-income-status').textContent='Dữ liệu giờ Rolling và Healthcare được giữ nguyên.';
+}
+$('fin-income-delete-all').onclick=()=>deleteSavedIncome('all');$('fin-income-delete-selected').onclick=()=>{const selected=parseDate($('day')?.value)?$('day').value:today();deleteSavedIncome('day',selected)};
+$('fin-income-undo').onclick=()=>{
+ if(!incomeDeleteUndo){$('fin-income-delete-status').textContent='Không còn bản xóa nào để hoàn tác.';return}
+ if(!confirm('Khôi phục lại dữ liệu Thu nhập ngay trước lần xóa gần nhất?'))return;
+ flexStorage.setItem(MONEYKEY,incomeDeleteUndo);resetIncomeDeleteUndo();
+ renderIncome();$('fin-income-delete-status').textContent='Đã hoàn tác. Thu nhập trước khi xóa đã được khôi phục; Rolling và Healthcare không thay đổi.';
+};
+
+function renderIncome(){const data=incomeLoad(),selected=parseDate($('day')?.value)?$('day').value:today(),weekStart=monday(selected),weekEnd=nextDay(weekStart,6),entries=rolling(),current=ym(today());
+ const sum=arr=>arr.reduce((n,r)=>n+r.cents,0),all=allIncomeRecords(data),day=all.filter(r=>r.date===selected),week=all.filter(r=>r.date>=weekStart&&r.date<=weekEnd),month=all.filter(r=>ym(r.date)===current);
+ const weekFin=data.finalDays.filter(d=>d>=weekStart&&d<=weekEnd&&!data.pendingRecords.some(r=>r.date===d)),mins=weekFin.reduce((n,d)=>n+(Number(entries[d]?.a)||0),0);
+ const missing=Object.keys(entries).filter(d=>d>=weekStart&&d<=weekEnd&&(Number(entries[d]?.a)||0)>0&&(!data.finalDays.includes(d)||data.pendingRecords.some(r=>r.date===d))).length;
+ // Warn on already-finalized days too: re-uploading OCR must never leave a
+ // misleading "fully paid" label if the saved trips are shorter than Rolling.
+ const audit=Object.keys(entries).filter(d=>ym(d)===current&&(Number(entries[d]?.a)||0)>0&&data.finalDays.includes(d)).map(d=>{
+  const paid= data.records.filter(r=>r.date===d&&validMoney(r));
+  const recorded=paid.reduce((n,r)=>n+duration(r.start,r.end),0);
+  return {date:d,recorded,expected:Number(entries[d].a)||0,missing:(Number(entries[d].a)||0)-recorded,count:paid.length};
+ }).filter(x=>x.missing>12).sort((a,b)=>b.date.localeCompare(a.date));
+ $('fin-income-integrity-wrap').hidden=!audit.length;
+ if(audit.length){
+  $('fin-income-integrity-title').textContent='⚠️ '+audit.length+' ngày đã lưu có thể thiếu chuyến';
+  $('fin-income-integrity-body').textContent=audit.map(x=>prettyDate(x.date)+': '+x.count+' chuyến, giờ Earnings '+fmtMinutes(x.recorded)+' / Rolling '+fmtMinutes(x.expected)+' — lệch '+fmtMinutes(x.missing)+'. Kiểm tra OCR hoặc thêm chuyến còn thiếu.').join('\n');
+  $('fin-income-integrity-body').style.whiteSpace='pre-line';
+ }
+ const split=arr=>{const deliveries=arr.filter(r=>!r.specialType),b=deliveries.filter(r=>Number.isSafeInteger(r.baseCents)).reduce((a,r)=>a+r.baseCents,0),t=deliveries.filter(r=>Number.isSafeInteger(r.tipsCents)).reduce((a,r)=>a+r.tipsCents,0),partial=deliveries.some(r=>!Number.isSafeInteger(r.baseCents)||!Number.isSafeInteger(r.tipsCents));return !deliveries.length?'—':(fmtMoney(b)+' / '+fmtMoney(t))+(partial?' *':'')};
+ const waiting=data.pendingRecords.filter(r=>r.date===selected),waitingCents=sum(waiting),confirmedCents=sum(day);
+ $('fin-income-day').textContent=waiting.length?'Chờ Tips':day.length?fmtMoney(confirmedCents):'Chưa có Earnings';
+ $('fin-day-paid').textContent=fmtMoney(confirmedCents);
+ $('fin-day-pending').textContent=fmtMoney(waitingCents);
+ $('fin-day-estimate').textContent=fmtMoney(confirmedCents+waitingCents);
+ $('fin-income-week').textContent=week.length?fmtMoney(sum(week)):'—';
+ $('fin-income-day-split').textContent='Base / Tips: '+split(day);
+ {const weekDisplay=split(week).split(' / ');$('fin-income-week-split').innerHTML=weekDisplay.length===2 ? '<span class="neon-week-split neon-base"><span>Base:</span><b>'+weekDisplay[0]+'</b></span><span class="neon-week-split neon-tips"><span>Tips:</span><b>'+weekDisplay[1]+'</b></span>' : 'Base / Tips: —';}
+ $('fin-income-month').textContent=month.length?fmtMoney(sum(month)):'—';
+ const monthDeliveries=month.filter(r=>!r.specialType);
+ $('fin-month-base').textContent=monthDeliveries.length?fmtMoney(monthDeliveries.reduce((n,r)=>n+(Number.isSafeInteger(r.baseCents)?r.baseCents:0),0)):'—';
+ $('fin-month-tips').textContent=monthDeliveries.length?fmtMoney(monthDeliveries.reduce((n,r)=>n+(Number.isSafeInteger(r.tipsCents)?r.tipsCents:0),0)):'—';
+ $('fin-income-specials').textContent=fmtMoney(sum(month.filter(r=>r.specialType)));
+ const adj=month.filter(r=>r.specialType==='adjustment'),extra=month.filter(r=>r.specialType==='extra_tips'),subsidy=month.filter(r=>r.specialType==='health_subsidy');
+ $('fin-income-special-breakdown').textContent='Adjustment: '+fmtMoney(sum(adj))+' · Tips thêm: '+fmtMoney(sum(extra))+' · Healthcare: '+fmtMoney(sum(subsidy));
+ const unclassified=month.filter(r=>!r.specialType).reduce((n,r)=>n+Math.max(0,r.cents-(Number.isSafeInteger(r.baseCents)?r.baseCents:0)-(Number.isSafeInteger(r.tipsCents)?r.tipsCents:0)),0);
+ const details=[...adj,...extra,...subsidy].sort((a,b)=>a.date.localeCompare(b.date)||a.specialType.localeCompare(b.specialType)).map(r=>prettyDate(r.date)+' · '+specialLabels[r.specialType]+' · '+fmtMoney(r.cents));
+ $('fin-special-ledger-detail').textContent=details.length?details.join('\n'):'Chưa lưu khoản Adjustment, Tips thêm hoặc Healthcare nào trong tháng này.';
+ $('fin-special-ledger-detail').style.whiteSpace='pre-line';
+ if(unclassified)$('fin-special-ledger-detail').textContent+='\n* '+fmtMoney(unclassified)+' tiền chuyến chưa tách đủ Base / Tips (đã nằm trong tổng tháng).';
+ const recoverable=missingArchivedSpecials(data);$('fin-special-restore').hidden=!recoverable.length;
+ $('fin-special-safety-status').textContent=recoverable.length?'Có '+recoverable.length+' khoản cộng thêm từng được lưu trong tháng nhưng hiện không còn trong Thu nhập. Có thể khôi phục sau khi kiểm tra.':(!subsidy.length?'Healthcare tháng này: chưa có khoản thanh toán được lưu. Nếu Amazon đã trả, dùng nút Bổ sung hoặc upload lại ảnh.':'');
+ $('fin-income-rate').textContent=mins>0?fmtMoney(Math.round(sum(week)*60/mins))+'/h':'—';
+ $('fin-income-unfinished').textContent=missing+' ngày';
+ $('fin-income-current-month').textContent='Tháng '+monthLabel(current);
+ const prior=(()=>{const d=parseDate(today());d.setMonth(d.getMonth()-1);return localISO(d).slice(0,7)})();
+ const priorRecords=all.filter(r=>ym(r.date)===prior),priorDone=data.finalDays.filter(d=>ym(d)===prior);
+ const priorMissing=incompleteMonth(prior,data,entries),priorHas=priorRecords.length>0||priorDone.length>0;
+ const grace=today()<prior+'-08'?false:today()<(monthPurgeDate(prior)||'9999-12-31');
+ $('fin-income-retention-label').textContent='Tự chuyển ngày 01';
+ $('fin-income-retention-status').textContent='Tháng trước giữ từ ngày 01–07. Từ ngày 08 chỉ dọn khi mọi ngày chạy đã chốt Base + Tips. * Base/Tips có dấu * nếu ảnh chưa tách đủ.';
+ $('fin-income-prior-wrap').hidden=!priorHas;
+ if(priorHas){$('fin-income-prior-title').textContent='Tháng '+monthLabel(prior)+' · '+(today()<(monthPurgeDate(prior)||'9999-12-31')?'Giữ 7 ngày đầu tháng mới':priorMissing.length?'Còn Tips/ngày chưa chốt':'Đã chốt');
+  $('fin-income-prior-status').textContent=priorMissing.length?priorMissing.length+' ngày đã chạy chưa chốt tiền: '+priorMissing.map(prettyDate).join(', '):'Tất cả ngày chạy đã chốt tiền.';
+  $('fin-income-prior').textContent='Tổng tiền đã lưu: '+fmtMoney(sum(priorRecords))+' · Base / Tips: '+split(priorRecords);
+ }
+ const div=$('fin-income-history');div.replaceChildren();const groups={};
+ for(const r of [...all,...data.pendingRecords.map(r=>({...r,pending:true}))]){(groups[r.date]??=[]).push(r)}
+ for(const day of data.finalDays){if(!groups[day])groups[day]=[]}
+ const dates=Object.keys(groups).sort().reverse();for(const date of dates){const rows=groups[date];const box=document.createElement('div');box.className='fin-history-day';const sumDay=sum(rows);
+  const heading=document.createElement('div');heading.className='fin-line';const title=document.createElement('b');title.textContent=prettyDate(date);const amount=document.createElement('b');amount.textContent=fmtMoney(sumDay-rows.filter(r=>r.pending).reduce((n,r)=>n+r.cents,0));heading.append(title,amount);box.append(heading);
+  const caption=document.createElement('div');caption.className='fin-mini';caption.textContent=rows.filter(r=>!r.specialType&&!r.pending).length+' chuyến Paid'+(rows.some(r=>r.pending)?' · Chờ Tips: '+fmtMoney(rows.filter(r=>r.pending).reduce((n,r)=>n+r.cents,0)):'')+' · '+rows.filter(r=>r.specialType).map(r=>(specialLabels[r.specialType]||'Khác')+': '+fmtMoney(r.cents)).join(' · ')+' · Base / Tips: '+split(rows);box.append(caption);
+  const manage=document.createElement('details');manage.className='fin-history-manage';
+  const summary=document.createElement('summary');summary.textContent='Quản lý / Xóa ngày hoặc từng khoản';manage.append(summary);
+  for(const r of [...rows].sort((a,b)=>(a.start||'').localeCompare(b.start||''))){
+   const line=document.createElement('div');line.className='fin-delete-entry';
+   const txt=document.createElement('span');txt.textContent=(r.specialType?(specialLabels[r.specialType]||'Khoản cộng thêm'):(r.start+'–'+r.end+(r.pending?' · Chờ Tips':'')))+' · '+fmtMoney(r.cents);
+   const del=document.createElement('button');del.type='button';del.className='danger';del.textContent='Xóa';del.setAttribute('aria-label','Xóa '+txt.textContent+' ngày '+prettyDate(date));
+   const identity=r.specialType?'s|'+specialKey(r):'d|'+recordKey(r);
+   del.onclick=()=>deleteSavedIncome('entry',date,identity);line.append(txt,del);manage.append(line);
+  }
+  const delDay=document.createElement('button');delDay.type='button';delDay.className='danger fin-delete-day';delDay.textContent='🗑️ Xóa cả ngày '+prettyDate(date);
+  delDay.onclick=()=>deleteSavedIncome('day',date);manage.append(delDay);box.append(manage);div.append(box);
+ }
+ if(!dates.length)div.textContent='Chưa có thu nhập nào.';
+}
+function setupReviewRow(item){const r={...item};review.push(r);updateReview()}
+function updateReview(){const root=$('fin-income-review-list');root.replaceChildren();let idx=0;
+ for(const r of review){const id=idx++;const outer=document.createElement('details');outer.className='fin-review-row '+(r.kind==='special'?'fin-review-special':'fin-review-trip')+(r.pending?' fin-pending':'');const headline=document.createElement('summary');const headingText=()=>r.kind==='special'?(prettyDate(r.date)+' · '+(specialLabels[r.specialType]||'Khoản khác')+' · '+fmtMoney(r.cents||0)):(prettyDate(r.date)+' · '+(r.start||'--:--')+'–'+(r.end||'--:--')+' · '+fmtMoney(r.cents||0)+' · '+(r.pending?'Chờ Tips':'Paid'));headline.textContent=headingText();outer.append(headline);if(!validReview(r))outer.open=true;
+  if(r.kind==='special'){
+   const marker=document.createElement('b');marker.textContent='Khoản cộng thêm · Không có giờ chạy';outer.append(marker);
+   const grid=document.createElement('div');grid.className='fin-inputs';
+   const fields=[['Ngày','date','date'],['Loại khoản','select','specialType'],['Số tiền ($)','number','amount']];
+   for(const [label,type,key] of fields){const wrap=document.createElement('div'),l=document.createElement('label');l.textContent=label;let input;
+    if(type==='select'){input=document.createElement('select');for(const [value,name] of Object.entries(specialLabels)){const o=document.createElement('option');o.value=value;o.textContent=name;input.append(o)}input.value=r.specialType||'adjustment';}
+    else{input=document.createElement('input');input.type=type;if(type==='number'){input.step='0.01';input.min='0.01'}input.value=key==='amount'?(r.cents===null?'':(r.cents/100).toFixed(2)):r[key]||''}
+    input.addEventListener('input',()=>{if(key==='amount'){const n=Number(input.value);r.cents=input.value.trim()!==''&&Number.isFinite(n)&&n>0&&n<=1000000?Math.round(n*100):null}else r[key]=input.value;headline.textContent=headingText();updateReviewSummary()});l.append(input);wrap.append(l);grid.append(wrap)}
+   const controls=document.createElement('div');controls.className='fin-actions';const del=document.createElement('button');del.type='button';del.className='secondary';del.textContent='Bỏ khoản';del.onclick=()=>{review=review.filter(x=>x!==r);updateReview()};controls.append(del);outer.append(grid,controls);root.append(outer);continue;
+  }
+  const fields=[['Ngày','date','date'],['Bắt đầu','time','start'],['Kết thúc','time','end'],['Tiền tổng ($)','number','amount'],['Base ($) · nếu biết','number','base'],['Tips ($) · nếu biết','number','tips']];const grid=document.createElement('div');grid.className='fin-inputs';
+  for(const [label,type,key] of fields){const wrap=document.createElement('div'),l=document.createElement('label'),input=document.createElement('input');l.textContent=label;input.type=type;input.step=type==='number'?'0.01':'any';input.min=type==='number'?'0':undefined;input.value=key==='amount'?(r.cents===null?'':(r.cents/100).toFixed(2)):(key==='base'||key==='tips')?(Number.isSafeInteger(r[key+'Cents'])?(r[key+'Cents']/100).toFixed(2):''):r[key]||'';
+   input.addEventListener('input',()=>{if(key==='amount'||key==='base'||key==='tips'){const n=Number(input.value),c=input.value.trim()!==''&&Number.isFinite(n)&&n>=0&&n<=1000000?Math.round(n*100):null;if(key==='amount')r.cents=c;else r[key+'Cents']=c}else r[key]=input.value;headline.textContent=headingText();updateReviewSummary()});l.append(input);wrap.append(l);grid.append(wrap)}
+  const controls=document.createElement('div');controls.className='fin-actions';const status=document.createElement('label');status.textContent='Trạng thái trên Amazon';const selector=document.createElement('select');selector.className='fin-status-select';for(const [value,label] of [['paid','Paid · Đã chốt'],['pending','Tips pending · Tạm tính']]){const option=document.createElement('option');option.value=value;option.textContent=label;selector.append(option)}selector.value=r.pending?'pending':'paid';selector.onchange=()=>{r.pending=selector.value==='pending';headline.textContent=headingText();outer.classList.toggle('fin-pending',r.pending);updateReviewSummary()};status.append(selector);controls.append(status);const del=document.createElement('button');del.type='button';del.className='secondary';del.textContent='Bỏ chuyến';del.onclick=()=>{review=review.filter(x=>x!==r);updateReview()};controls.append(del);
+  outer.append(grid,controls);root.append(outer);
+ }
+ updateReviewSummary();renderIncomeReferences();$('fin-income-review').hidden=false;
+}
+function updateReviewSummary(){
+ const good=review.filter(validReview),invalid=review.length-good.length,paid=good.filter(r=>r.kind!=='special'&&!r.pending),pending=good.filter(r=>r.kind!=='special'&&r.pending),specials=good.filter(r=>r.kind==='special');
+ const old=incomeLoad(),allDays=[...new Set(good.map(r=>r.date))].sort();
+ $('fin-income-review-summary').textContent=`${paid.length} Paid · ${pending.length} chờ Tips · ${specials.length} khoản cộng thêm${invalid?' · '+invalid+' dòng cần sửa':''}${dupReview?' · '+dupReview+' dòng ảnh trùng':''}`;
+ const list=$('fin-income-simple-days');list.replaceChildren();
+ for(const date of allDays){const d=paid.filter(r=>r.date===date),p=pending.filter(r=>r.date===date),sp=specials.filter(r=>r.date===date),oldPaid=old.records.filter(r=>r.date===date);
+  const paidMap=new Map(oldPaid.map(r=>[recordKey(r),r]));for(const r of d)paidMap.set(recordKey(r),r);
+  const pendingMap=new Map(old.pendingRecords.filter(r=>r.date===date).map(r=>[recordKey(r),r]));for(const r of p){if(!paidMap.has(recordKey(r)))pendingMap.set(recordKey(r),r)}for(const key of paidMap.keys())pendingMap.delete(key);
+  const extras=new Map(old.specials.filter(r=>r.date===date).map(r=>[specialKey(r),r]));for(const r of sp)extras.set(specialKey(r),r);
+  const saved=[...paidMap.values(),...extras.values()].reduce((n,r)=>n+r.cents,0),waiting=[...pendingMap.values()].reduce((n,r)=>n+r.cents,0);
+  const container=document.createElement('div');container.className='fin-simple-day';const head=document.createElement('div');const label=document.createElement('span');label.textContent=prettyDate(date);const amount=document.createElement('b');amount.textContent=fmtMoney(saved+waiting);head.append(label,amount);container.append(head);
+  const info=document.createElement('div');info.className='fin-mini';info.textContent=`${paidMap.size} chuyến Paid · ${fmtMoney(saved)} đã chốt${pendingMap.size?' · '+pendingMap.size+' chờ Tips ('+fmtMoney(waiting)+')':''}`;container.append(info);
+  const expected=Number(rolling()[date]?.a)||0,minutes=[...paidMap.values(),...pendingMap.values()].reduce((n,r)=>n+duration(r.start,r.end),0);
+  if(expected>0&&minutes+12<expected){const warn=document.createElement('div');warn.className='fin-mini fin-income-pending';warn.textContent='⚠️ Giờ Earnings '+fmtMinutes(minutes)+' / Rolling '+fmtMinutes(expected)+'. Có thể thiếu chuyến; vẫn lưu tạm được.';container.append(warn)}
+  list.append(container)
+ }
+ const msg=incomeOCRIssues.filter(x=>!/Tips pending/i.test(x));$('fin-income-ocr-warnings').textContent=msg.join('\n')||'Chưa có cảnh báo.';
+ $('fin-income-review-audit').textContent='';
+}
+const dateEnglish=line=>{
+ let m=line.match(/\b(20\d{2})[-\/](\d{1,2})[-\/](\d{1,2})\b/);if(m)return [Number(m[1]),Number(m[2]),Number(m[3]),null];
+ const wd='(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)',mon='(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)';
+ m=line.match(new RegExp('\\b('+wd+')?(?:day)?\\s*,?\\s*'+mon+'(?:[a-z]*)?\\s+(\\d{1,2})(?:,?\\s+(20\\d{2}))?\\b','i'));
+ if(!m)return null;return [m[4]?Number(m[4]):null,['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'].indexOf(m[2].toLowerCase())+1,Number(m[3]),m[1]?.toLowerCase().slice(0,3)||null]
+};
+function inferEnglishDate(info){if(!info)return '';const [year,month,day,wd]=info,n=new Date(),candidates=[];
+ for(const y of year?[year]:[n.getFullYear()-1,n.getFullYear(),n.getFullYear()+1]){const d=new Date(y,month-1,day,12);if(d.getFullYear()!==y||d.getMonth()!==month-1||d.getDate()!==day)continue;
+  if(wd&&d.getDay()!==['sun','mon','tue','wed','thu','fri','sat'].indexOf(wd))continue;candidates.push(d)}
+ candidates.sort((a,b)=>Math.abs(a-n)-Math.abs(b-n));return candidates[0]?localISO(candidates[0]):'';
+}
+const parseTime=(h,m,ap)=>{let hh=Number(h),mm=Number(m);if(hh<1||hh>12||mm>59)return null;hh=hh%12+(ap.toUpperCase()==='PM'?12:0);return pad(hh)+':'+pad(mm)};
+const timeRange=/\b(\d{1,2}):(\d{2})\s*(AM|PM)\s*[-–—]\s*(\d{1,2}):(\d{2})\s*(AM|PM)\b/i;
+const moneyRegex=/\$\s*([\d,]+(?:\.\d{1,2})?)/g;
+const amountCents=s=>{const n=Number(String(s).replace(/,/g,''));return Number.isFinite(n)?Math.round(n*100):null};
+// Parse each Amazon Earnings card independently. Titles such as "Instant cash out" belong
+// to the NEXT dated card when they precede its date, not to the previous delivery.
+// The older parser appended these titles to the delivery and discarded the whole delivery.
+const incomeBoundary=/^(?:instant\s+cash\s*out|payment\s+sent|payment\s+issued|california\s+padsa|additional\s+tips?\s+added|earnings?\s+adjustment)\b/i;
+const isCashTransfer=text=>/instant\s+cash\s*out|payment\s+sent|payment\s+issued|transfer\s+completed|transfer\s+complete/i.test(text);
+const isIncomeSpecial=text=>/california\s+padsa.*?(?:health\s+subsidy|healthcare\s+subsidy)|health(?:care)?\s+subsidy|earnings?\s+adjustment|additional\s+tips?/i.test(text);
+function parseIncomeOCR(text){
+ const lines=String(text).replace(/[–—−]/g,'-').split(/\n/).map(v=>v.trim()).filter(Boolean);
+ const segments=[],warnings=[];let group=null,prelude=[];
+ const flush=()=>{if(group){segments.push(group);group=null}};
+ for(let i=0;i<lines.length;i++){
+  const line=lines[i],date=inferEnglishDate(dateEnglish(line));
+  if(date){flush();group={date,lines:[...prelude,line]};prelude=[];continue}
+  if(incomeBoundary.test(line)&&group){
+   // Amazon titles are sometimes printed on the line BEFORE a date.
+   // This split avoids contaminating the preceding card with a Cash Out/Adjustment title.
+   const upcoming=lines.slice(i+1,i+4).some(v=>!!inferEnglishDate(dateEnglish(v)));
+   if(upcoming&&(timeRange.test(group.lines.join(" "))||isCashTransfer(group.lines.join(" "))||isIncomeSpecial(group.lines.join(" "))||/\bpaid\b/i.test(group.lines.join(" ")))){flush();prelude=[line];continue}
+  }
+  if(group)group.lines.push(line);
+  else if(incomeBoundary.test(line))prelude.push(line);
+ }
+ flush();
+ const rows=[];let pending=0;
+ for(const seg of segments){
+  const joined=seg.lines.join(' | '),text=joined.replace(/\s+/g,' ');
+  const m=text.match(timeRange),start=m?parseTime(m[1],m[2],m[3]):null,end=m?parseTime(m[4],m[5],m[6]):null;
+  const transfer=isCashTransfer(text),special=isIncomeSpecial(text);
+  // Cash Out and Payment sent never create new income and must not poison a neighbor.
+  if(transfer&&!m)continue;
+  if(transfer&&m){warnings.push(seg.date+' có cả giờ chuyến và chữ chuyển tiền; kiểm tra ảnh này');continue}
+  if(!m&&special){let type=null;
+   if(/health(?:care)?\s+subsidy|california\s+padsa.*?health/i.test(text))type='health_subsidy';
+   else if(/earnings?\s+adjustment/i.test(text))type='adjustment';
+   else if(/additional\s+tips?/i.test(text))type='extra_tips';
+   if(type){const amounts=[...text.matchAll(moneyRegex)];const cents=amounts.length?amountCents(amounts[0][1]):null;
+    if(cents!==null&&cents>0)rows.push({kind:'special',date:seg.date,specialType:type,cents});
+    else warnings.push(seg.date+' '+specialLabels[type]+': thiếu số tiền; hãy thêm thủ công');
+    continue;
+   }
+  }
+  if(!m){if(/\$|base\s*:|tips\s*:|paid\b/i.test(text))warnings.push(seg.date+': có dòng tiền nhưng OCR không đọc được giờ hoặc ngày; kiểm tra/thêm chuyến thủ công');continue}
+  if(!start||!end||duration(start,end)<=0||duration(start,end)>720){warnings.push(seg.date+': giờ chuyến không hợp lệ');continue}
+  const pendingTips=/tips?\s+pending/i.test(text);if(pendingTips)pending++;
+  if(!pendingTips&&!/\bpaid\b|\bbase\s*:|\btips\s*:|\bcompleted\b/i.test(text)){
+   warnings.push(seg.date+' '+start+'–'+end+': chưa xác nhận Paid; kiểm tra ảnh');continue;
+  }
+  const base=text.match(/\bbase\s*:\s*\$?\s*([\d,]+(?:\.\d{1,2})?)/i),tips=text.match(/\btips\s*:\s*\$?\s*([\d,]+(?:\.\d{1,2})?)/i);
+  const b=base?amountCents(base[1]):null,t=tips?amountCents(tips[1]):null;
+  const trimmed=text.replace(/\b(?:base|tips)\s*:\s*\$?\s*[\d,]+(?:\.\d{1,2})?/gi,'');
+  const amounts=[...trimmed.matchAll(moneyRegex)],gross=amounts.length?amountCents(amounts[0][1]):null;
+  const total=gross!==null?gross:(b!==null&&t!==null?b+t:null);
+  if(total===null){warnings.push(seg.date+' '+start+': OCR thiếu tổng tiền; kiểm tra/thêm chuyến');continue}
+  if(b!==null&&t!==null&&b+t!==total){warnings.push(seg.date+' '+start+': tổng '+fmtMoney(total)+' khác Base+Tips '+fmtMoney(b+t)+'; cần kiểm tra');}
+  rows.push({kind:'delivery',date:seg.date,start,end,cents:total,baseCents:pendingTips?(b??total):b,tipsCents:pendingTips?null:t,pending:pendingTips});
+ }
+ return {rows,warnings,pending,segments:segments.length};
+}
+function incomeQuality(r){if(!r||!validReview(r))return -1;
+ if(r.kind==='special')return 1;
+ const split=Number.isSafeInteger(r.baseCents)&&Number.isSafeInteger(r.tipsCents);
+ return (split?4:0)+(r.cents>0?2:0);
+}
+function dedupIncomeReview(items){
+ const merged=new Map(),conflicts=[];let duplicates=0;
+ for(const r of items){
+  const key=recordKey(r),old=merged.get(key);
+  if(!old){merged.set(key,r);continue}
+  if(old.kind!=='special'&&!!old.pending!==!!r.pending){duplicates++;if(!r.pending)merged.set(key,r);continue}
+  // Same-day/time with different pay may be an OCR collision. Never silently
+  // discard either candidate: user must identify the correct one in preview.
+  if(old.cents!==r.cents){
+   const collisionKey=key+'|OCR-COLLISION|'+r.cents;
+   if(!merged.has(collisionKey)){
+    merged.set(collisionKey,r);
+    conflicts.push(`${prettyDate(r.date)} ${r.start||specialLabels[r.specialType]||''}: TRÙNG GIỜ nhưng KHÁC TIỀN ${fmtMoney(old.cents||0)} / ${fmtMoney(r.cents||0)}. Giữ cả hai để kiểm tra; phải bỏ dòng sai trước khi lưu.`);
+   }else duplicates++;
+   continue;
+  }
+  // Exact same delivery and amount across overlapping screenshots is safe
+  // to merge; favor the OCR result with a complete Base/Tips breakdown.
+  if(old.kind!=='special'&&Number.isSafeInteger(old.baseCents)&&Number.isSafeInteger(old.tipsCents)&&Number.isSafeInteger(r.baseCents)&&Number.isSafeInteger(r.tipsCents)&&
+      (old.baseCents!==r.baseCents||old.tipsCents!==r.tipsCents)){
+   const collisionKey=key+'|OCR-SPLIT|'+r.baseCents+'|'+r.tipsCents;
+   if(!merged.has(collisionKey)){
+    merged.set(collisionKey,r);
+    conflicts.push(`${prettyDate(r.date)} ${r.start}: cùng tổng ${fmtMoney(r.cents)} nhưng Base/Tips khác. Phải đối chiếu và bỏ dòng sai trước khi lưu.`);
+   }else duplicates++;
+   continue;
+  }
+  duplicates++;
+  if(incomeQuality(r)>incomeQuality(old))merged.set(key,r);
+ }
+ return {items:[...merged.values()],duplicates,conflicts};
+}
+function importOCRImages(files){
+ if(busy||!files.length)return;
+ if(files.some(f=>!(f.type||'').startsWith('image/')&&!/\.(png|jpe?g|webp|heic|heif|bmp)$/i.test(f.name||''))){$('fin-income-status').textContent='Chỉ chọn file ảnh (PNG, JPG, HEIC, WEBP...).';$('fin-income-images').value='';return}
+ busy=true;const isAppend=appendImages;appendImages=false;
+ if(!isAppend){clearIncomeEvidence();review=[];blockedPending=0;dupReview=0;incomeOCRIssues=[];incomePendingDates=new Set();incomePendingKeys=new Set();incomeOCRDayNotes=[];$('fin-income-confirm').checked=false}
+ $('fin-income-review').hidden=false;$('fin-income-status').textContent='Đang đọc '+files.length+' ảnh…';
+ (async()=>{try{
+  if(!window.Tesseract){await new Promise((ok,err)=>{const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';sc.onload=ok;sc.onerror=()=>err(Error('Không tải được OCR khi offline'));document.head.append(sc)})}
+  for(let i=0;i<files.length;i++){
+   $('fin-income-status').textContent=`Đang đọc ảnh ${i+1}/${files.length}: ${files[i].name}`;
+   const evidence={name:files[i].name,url:URL.createObjectURL(files[i]),text:'',note:'Đang OCR'};incomeEvidence.push(evidence);
+   const result=await Tesseract.recognize(files[i],'eng');const parsed=parseIncomeOCR(result.data.text);
+   evidence.text=result.data.text;evidence.note=parsed.rows.filter(r=>r.kind!=='special').length+' chuyến + '+parsed.rows.filter(r=>r.kind==='special').length+' khoản khác; '+parsed.warnings.length+' cảnh báo';
+   showIncomeEvidence();
+   for(const warning of parsed.warnings){const match=warning.match(/^\d{4}-\d{2}-\d{2}/);if(match&&!/Tips pending/i.test(warning))incomeProblemDates.add(match[0]);}
+   if(parsed.segments===0||(!parsed.rows.length&&!parsed.pending))incomeGlobalProblem=true;
+   review.push(...parsed.rows);blockedPending+=parsed.pending;
+   for(const w of parsed.warnings){incomeOCRIssues.push(`${files[i].name}: ${w}`);const match=w.match(/^\d{4}-\d{2}-\d{2}/);if(match&&/Tips pending/i.test(w)){incomePendingDates.add(match[0]);const parts=w.match(/^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2})[–-](\d{2}:\d{2}) Tips pending/);if(parts)incomePendingKeys.add(parts[1]+'|'+parts[2]+'|'+parts[3]);}}
+   incomeOCRDayNotes.push(`Ảnh ${i+1} (${files[i].name}): ${parsed.rows.filter(r=>r.kind!=='special').length} chuyến, ${parsed.rows.filter(r=>r.kind==='special').length} khoản khác, ${parsed.pending} Tips pending, ${parsed.warnings.length} cảnh báo`);
+   if(parsed.segments===0)incomeOCRIssues.push(files[i].name+': không tìm được dòng ngày trong ảnh — có thể OCR bỏ sót toàn bộ.');
+   else if(!parsed.rows.length&&!parsed.pending)incomeOCRIssues.push(files[i].name+': không tìm được chuyến/khoản tiền, cần kiểm tra ảnh.');
+  }
+  const result=dedupIncomeReview(review);review=result.items;dupReview+=result.duplicates;
+  incomeOCRIssues.push(...result.conflicts);
+  // If one screenshot was taken while Tips were pending and a later screenshot
+  // shows the same block Paid, do not keep this date falsely flagged as pending.
+  const paidKeys=new Set(review.filter(r=>r.kind!=='special'&&!r.pending).map(recordKey));
+  const oldKeys=new Set(incomeLoad().records.map(recordKey));
+  incomePendingDates=new Set(review.filter(r=>r.pending&&!paidKeys.has(recordKey(r))&&!oldKeys.has(recordKey(r))).map(r=>r.date));
+  updateReview();$('fin-income-confirm').checked=false;
+  $('fin-income-status').textContent=`Đã đọc ${files.length} ảnh. ${review.length} mục sau gộp trùng; ${incomeOCRIssues.length} cảnh báo. Vui lòng so ngày/giờ/tổng tiền với ảnh trước khi lưu.`;
+ }catch(err){incomeOCRIssues.push('Lỗi OCR: '+err.message);$('fin-income-status').textContent='Lỗi OCR: '+err.message+'. Đã giữ kết quả đọc trước đó; bạn có thể thêm ảnh hoặc nhập tay.';updateReview()}
+ finally{busy=false;$('fin-income-images').value=''}
+ })();
+}
+const incomeChoose=append=>{appendImages=append;
+ if($('flex-pick-files')){$('fin-income-source').hidden=false;return}
+ $('fin-income-images').accept='image/*';$('fin-income-images').click();};
+$('fin-income-upload').onclick=()=>incomeChoose(false);$('fin-income-more').onclick=()=>incomeChoose(true);
+$('fin-income-source-photos').onclick=()=>{$('fin-income-source').hidden=true;$('fin-income-images').accept='image/*';$('fin-income-images').click()};
+$('fin-income-source-files').onclick=()=>{$('fin-income-source').hidden=true;$('fin-income-images').accept='*/*';$('fin-income-images').click()};
+$('fin-income-images').onchange=e=>importOCRImages([...e.target.files]);
+function addManual(){setupReviewRow({kind:'delivery',date:parseDate($('day')?.value)?$('day').value:today(),start:'',end:'',cents:null});$('fin-income-status').textContent='Nhập ngày, giờ và tổng tiền đã có Base + Tips.'}
+function addSpecial(type){const specialType=typeof type==='string'&&Object.hasOwn(specialLabels,type)?type:'adjustment';setupReviewRow({kind:'special',date:parseDate($('day')?.value)?$('day').value:today(),specialType,cents:null});$('fin-income-status').textContent='Chọn loại khoản cộng thêm, ngày Amazon ghi nhận và số tiền. Không tính Instant Cash Out hay Payment sent.'}
+$('fin-income-add').onclick=addManual;$('fin-income-more-manual').onclick=addManual;$('fin-income-add-special').onclick=()=>addSpecial();$('fin-income-more-special').onclick=()=>addSpecial();
+$('fin-special-add-health').onclick=()=>{$('fin-special-ledger').open=false;addSpecial('health_subsidy');$('fin-income-review').scrollIntoView({behavior:'smooth',block:'start'});};
+$('fin-special-restore').onclick=()=>{const data=incomeLoad(),missing=missingArchivedSpecials(data);if(!missing.length){renderIncome();return;}
+ const preview=missing.map(r=>prettyDate(r.date)+' '+specialLabels[r.specialType]+' '+fmtMoney(r.cents)).join('\n');
+ if(!confirm('Chỉ khôi phục những khoản sau từ bản lưu an toàn?\n\n'+preview+'\n\nKhông thay đổi giờ Rolling.'))return;
+ data.specials.push(...missing);data.specials.sort((a,b)=>a.date.localeCompare(b.date)||a.specialType.localeCompare(b.specialType));
+ flexStorage.setItem(MONEYKEY,JSON.stringify(data));renderIncome();$('fin-income-status').textContent='Đã khôi phục '+missing.length+' khoản cộng thêm đã lưu trước đó; kiểm tra tổng thu nhập tháng.';
+};
+$('fin-income-cancel').onclick=()=>{$('fin-income-review').hidden=true;review=[];blockedPending=0;dupReview=0;incomePendingDates=new Set();incomeOCRIssues=[];incomeOCRDayNotes=[];clearIncomeEvidence()};
+$('fin-income-save').onclick=()=>{
+ if(!review.length){alert('Chưa có chuyến hoặc khoản tiền nào để lưu.');return}
+ if(review.some(r=>!validReview(r))){alert('Có dòng OCR chưa đủ ngày, giờ hoặc số tiền. Chạm dòng đó để chỉnh hoặc chọn Bỏ.');return}
+ if(!$('fin-income-confirm').checked){alert('Hãy đánh dấu xác nhận đã xem danh sách giao dịch.');return}
+ const distinct=new Map(),specials=new Map();let collisions=0;
+ for(const r of review){if(r.kind==='special'){specials.set(specialKey(r),r);continue}
+  const key=recordKey(r),old=distinct.get(key);
+  if(!old){distinct.set(key,r);continue}
+  if(!!old.pending!==!!r.pending){if(!r.pending)distinct.set(key,r);continue}
+  if(old.cents!==r.cents||(Number.isSafeInteger(old.baseCents)&&Number.isSafeInteger(r.baseCents)&&old.baseCents!==r.baseCents)||(Number.isSafeInteger(old.tipsCents)&&Number.isSafeInteger(r.tipsCents)&&old.tipsCents!==r.tipsCents)){collisions++;continue}
+  if(incomeQuality(r)>incomeQuality(old))distinct.set(key,r)
+ }
+ if(collisions){alert('Có '+collisions+' cặp cùng ngày/giờ nhưng khác tiền. Hãy mở các dòng và bỏ kết quả OCR sai trước khi lưu.');return}
+ const data=incomeLoad(),savedPaid=new Map(data.records.map(r=>[recordKey(r),r])),savedPending=new Map(data.pendingRecords.map(r=>[recordKey(r),r]));
+ const now=new Date().toISOString(),touchedDates=new Set(),pendingDates=new Set();let newPaid=0,newPending=0,updated=0;
+ for(const r of distinct.values()){
+  const key=recordKey(r),date=r.date;touchedDates.add(date);
+  if(r.pending){if(savedPaid.has(key))continue;pendingDates.add(date);if(!savedPending.has(key))newPending++;savedPending.set(key,{date,start:r.start,end:r.end,cents:r.cents,baseCents:r.baseCents??null,tipsCents:null,updatedAt:now});continue}
+  if(savedPaid.has(key))updated++;else newPaid++;
+  const previous=savedPaid.get(key),preserve=previous&&previous.cents===r.cents;
+  savedPaid.set(key,{date,start:r.start,end:r.end,cents:r.cents,baseCents:r.baseCents??(preserve?previous.baseCents:null)??null,tipsCents:r.tipsCents??(preserve?previous.tipsCents:null)??null,updatedAt:now});
+  savedPending.delete(key);
+ }
+ for(const [key] of savedPaid)savedPending.delete(key);
+ for(const r of savedPending.values())pendingDates.add(r.date);
+ const extras=new Map(data.specials.map(r=>[specialKey(r),r]));let newExtras=0;
+ for(const r of specials.values())if(!extras.has(specialKey(r))){newExtras++;extras.set(specialKey(r),{date:r.date,specialType:r.specialType,cents:r.cents,updatedAt:now});touchedDates.add(r.date)}
+ data.records=[...savedPaid.values()].sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start));
+ data.pendingRecords=[...savedPending.values()].sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start));
+ data.specials=[...extras.values()].sort((a,b)=>a.date.localeCompare(b.date)||a.specialType.localeCompare(b.specialType));
+ archiveIncomeSpecials(data.specials);
+ const complete=new Set(data.finalDays.filter(d=>!pendingDates.has(d)));
+ let missingDays=0;
+ for(const date of touchedDates){if(pendingDates.has(date)){complete.delete(date);continue}
+  const expected=Number(rolling()[date]?.a)||0,minutes=data.records.filter(r=>r.date===date).reduce((n,r)=>n+duration(r.start,r.end),0);
+  if(expected>0&&minutes+12<expected){complete.delete(date);missingDays++}else if(expected>0&&minutes>=expected-12)complete.add(date);
+ }
+ data.finalDays=[...complete].sort();data.version=3;
+ flexStorage.setItem(MONEYKEY,JSON.stringify(data));resetIncomeDeleteUndo();pruneExpired();
+ review=[];blockedPending=0;dupReview=0;incomePendingDates=new Set();incomePendingKeys=new Set();incomeOCRIssues=[];incomeOCRDayNotes=[];clearIncomeEvidence();$('fin-income-review').hidden=true;
+ renderIncome();$('fin-income-status').textContent='Đã lưu '+newPaid+' chuyến Paid mới, '+newPending+' chuyến chờ Tips, cập nhật '+updated+' chuyến cũ, '+newExtras+' khoản cộng thêm.'+(missingDays?' ⚠️ '+missingDays+' ngày có thể thiếu chuyến, chưa chốt.':'')+' Dữ liệu Rolling không đổi.';
+};
+function healthEstimate(h,q,asDate){if(!Number.isSafeInteger(h.confirmedMinutes)||!parseDate(h.asOf)||h.asOf<q.from||h.asOf>asDate)return {confirmed:null,estimated:null,unconfirmed:0};
+ const end=asDate<q.to?asDate:q.to,unconfirmed=nextDay(h.asOf,1)<=end?totalDays(rolling(),nextDay(h.asOf,1),end):0;return {confirmed:h.confirmedMinutes,estimated:h.confirmedMinutes+unconfirmed,unconfirmed};}
+function scheduleGoal(target,actual,q,h,now){const elapsed=Math.min(q.days,Math.max(0,dayCount(q.from,now))),buffer=actual-target*60*elapsed/q.days,days=buffer/(target*60/q.days),pace=elapsed?actual/elapsed:0;
+ let finalDate=null,forecastEnd=actual;
+ if(actual>=target*60)finalDate=now;
+ else if(pace>0){let date=nextDay(now,1);while(date&&date<=q.to){const vacation=h.vacationFrom&&h.vacationTo&&date>=h.vacationFrom&&date<=h.vacationTo;if(!vacation)forecastEnd+=pace;if(forecastEnd>=target*60){finalDate=date;break}date=nextDay(date,1)}}
+ const daysRem=Math.max(0,dayCount(nextDay(now,1),q.to)),vacLeft=h.vacationFrom&&h.vacationTo?Math.max(0,dayCount(h.vacationFrom>nextDay(now,1)?h.vacationFrom:nextDay(now,1),h.vacationTo<q.to?h.vacationTo:q.to)):0;
+ const available=Math.max(0,daysRem-vacLeft),required=available>0?Math.max(0,target*60-actual)/available:null;
+ // Buffer after the proposed vacation: forecast at today's realized pace, excluding chosen days.
+ let postBuffer=null;if(h.vacationFrom&&h.vacationTo&&h.vacationTo>=now){const finish=h.vacationTo>q.to?q.to:h.vacationTo;let projected=actual;for(let d=nextDay(now,1);d&&d<=finish;d=nextDay(d,1)){if(d<h.vacationFrom||d>h.vacationTo)projected+=pace}postBuffer=projected-target*60*dayCount(q.from,finish)/q.days}
+ return {buffer,days,finalDate,required,postBuffer,available};}
+function renderHealth(){const q=quarter(today()),h=hcLoad(),d=healthEstimate(h,q,today());
+ $('fin-h-quarter-label').textContent=q.key.replace('-',' · ')+' ('+prettyDate(q.from)+' – '+prettyDate(q.to)+') · Quý cũ giữ 7 ngày.';
+ const oldKey=(()=>{const d=parseDate(q.from);d.setDate(d.getDate()-1);return quarter(localISO(d)).key})();
+ const last=hcStore().quarters[oldKey],oldStatus=$('fin-h-old-quarter');oldStatus.hidden=!last;
+ if(last){oldStatus.textContent='Quý '+oldKey+': Amazon xác nhận '+(Number.isSafeInteger(last.confirmedMinutes)?fmtMinutes(last.confirmedMinutes):'Chưa nhập')+(last.asOf?' đến '+prettyDate(last.asOf):'')+' · Được giữ 7 ngày đầu quý mới.';}
+
+ if(!healthInputsDirty){$('fin-h-hours').value=d.confirmed===null?'':String(Math.floor(d.confirmed/60));$('fin-h-minutes').value=d.confirmed===null?'':String(d.confirmed%60);$('fin-h-date').value=h.asOf||'';}
+ if(!vacInputsDirty){$('fin-h-from').value=h.vacationFrom||'';$('fin-h-to').value=h.vacationTo||'';}
+ $('fin-h-confirmed').textContent=d.confirmed===null?'Chưa nhập':fmtMinutes(d.confirmed);$('fin-h-asof').textContent=h.asOf?'Đến '+prettyDate(h.asOf):'Cần cập nhật giờ Amazon';$('fin-h-estimated').textContent=d.estimated===null?'—':fmtMinutes(d.estimated);
+ for(const goal of [197,328]){const node=$('fin-h-goal'+goal);node.replaceChildren();const title=document.createElement('b');title.textContent='Mốc '+goal+'h';node.append(title);
+  if(d.estimated===null){const txt=document.createElement('div');txt.className='fin-status';txt.textContent='Nhập giờ Amazon để tính Buffer và EST.';node.append(txt);continue}
+  const stats=scheduleGoal(goal,d.estimated,q,h,today());const line=document.createElement('div');line.className='fin-label';line.textContent='Buffer hiện tại';node.append(line);
+  const val=document.createElement('strong');val.className=stats.buffer>=0?'fin-good':'fin-bad';val.textContent=(stats.buffer>=0?'+':'−')+fmtMinutes(Math.abs(stats.buffer));node.append(val);
+  const equivalent=document.createElement('div');equivalent.className='fin-mini';equivalent.textContent=(stats.buffer>=0?'DƯ ≈ ':'THIẾU ≈ ')+Math.abs(stats.days).toFixed(1)+' ngày lịch';node.append(equivalent);
+  if(stats.postBuffer!==null){const p=document.createElement('div');p.className='fin-mini';p.style.marginTop='7px';p.textContent='Sau kỳ nghỉ: '+(stats.postBuffer>=0?'+':'−')+fmtMinutes(Math.abs(stats.postBuffer));p.classList.add(stats.postBuffer>=0?'fin-good':'fin-bad');node.append(p)}
+  const est=document.createElement('div');est.className='fin-status';est.style.marginTop='10px';est.textContent='EST đạt mốc: '+(stats.finalDate?prettyDate(stats.finalDate):'Không kịp trong quý');node.append(est);
+  const need=document.createElement('div');need.className='fin-status';need.textContent='Cần bình quân: '+(stats.required===null?'Không còn ngày':fmtMinutes(stats.required)+'/ngày còn lại');node.append(need);
+ }
+}
+$('fin-h-save').onclick=()=>{const q=quarter(today()),hours=Number($('fin-h-hours').value),mins=Number($('fin-h-minutes').value),asOf=$('fin-h-date').value;
+ if($('fin-h-hours').value.trim()===''||$('fin-h-minutes').value.trim()===''||!Number.isSafeInteger(hours)||hours<0||hours>3000||!Number.isSafeInteger(mins)||mins<0||mins>59||!parseDate(asOf)||asOf<q.from||asOf>today()){$('fin-h-status').textContent='Vui lòng nhập tổng giờ/phút và ngày Amazon ghi nhận hợp lệ trong quý hiện tại.';return}
+ const obj=hcLoad();obj.confirmedMinutes=hours*60+mins;obj.asOf=asOf;hcSave(obj);healthInputsDirty=false;renderHealth();$('fin-h-status').textContent='Đã lưu giờ Amazon. Rolling vẫn được giữ nguyên.';
+};
+$('fin-h-rest-save').onclick=()=>{const q=quarter(today()),from=$('fin-h-from').value,to=$('fin-h-to').value;
+ if(!parseDate(from)||!parseDate(to)||from>to||from<=today()||to>q.to){$('fin-h-rest-status').textContent='Chọn From–To từ ngày mai đến ngày cuối quý, From không được sau To.';return}
+ const h=hcLoad();h.vacationFrom=from;h.vacationTo=to;hcSave(h);vacInputsDirty=false;renderHealth();$('fin-h-rest-status').textContent='Đã lưu kỳ nghỉ '+prettyDate(from)+' – '+prettyDate(to)+'. Chỉ ảnh hưởng dự báo Healthcare.';
+};
+$('fin-h-rest-clear').onclick=()=>{const h=hcLoad();h.vacationFrom='';h.vacationTo='';hcSave(h);vacInputsDirty=false;renderHealth();$('fin-h-rest-status').textContent='Đã xóa kỳ nghỉ dự kiến.'};
+for(const id of ['fin-h-hours','fin-h-minutes','fin-h-date'])$(id).addEventListener('input',()=>{healthInputsDirty=true});
+for(const id of ['fin-h-from','fin-h-to'])$(id).addEventListener('input',()=>{vacInputsDirty=true});
+const refresh=()=>{pruneExpired();renderIncome();renderHealth()};
+// Public export/import adapter reads only the isolated new stores.
+window.flexFinanceExport=()=>{pruneExpired();return {income:incomeLoad(),healthcare:hcStore()}};
+const checkHealthcare=h=>{if(!h||typeof h!=='object')throw Error('Dữ liệu Healthcare trong JSON không hợp lệ');
+ const quarters=h.quarters&&typeof h.quarters==='object'&&!Array.isArray(h.quarters)?h.quarters:h.quarter?{[h.quarter]:h}:{};
+ for(const [key,val] of Object.entries(quarters)){
+  if(!/^20\d{2}-Q[1-4]$/.test(key)||!val||typeof val!=='object'||(val.confirmedMinutes!==null&&val.confirmedMinutes!==undefined&&(!Number.isSafeInteger(val.confirmedMinutes)||val.confirmedMinutes<0||val.confirmedMinutes>180000))||
+    (val.asOf&&!parseDate(val.asOf))||((val.vacationFrom||val.vacationTo)&&(!parseDate(val.vacationFrom)||!parseDate(val.vacationTo)||val.vacationFrom>val.vacationTo)))throw Error('Dữ liệu Healthcare không hợp lệ tại '+key);
+ }
+};
+window.flexFinanceValidate=(p)=>{
+ if(p.income!==undefined){if(!p.income||typeof p.income!=='object'||!Array.isArray(p.income.records)||!Array.isArray(p.income.finalDays)||(p.income.specials!==undefined&&(!Array.isArray(p.income.specials)||p.income.specials.some(r=>!validSpecial(r))))||(p.income.pendingRecords!==undefined&&(!Array.isArray(p.income.pendingRecords)||p.income.pendingRecords.some(r=>!validIncome(r))))||p.income.records.some(r=>!validIncome(r))||p.income.finalDays.some(d=>!parseDate(d)))throw Error('Dữ liệu thu nhập trong JSON không hợp lệ');}
+ if(p.healthcare!==undefined)checkHealthcare(p.healthcare);
+};
+window.flexFinanceImport=p=>{window.flexFinanceValidate(p);
+ if(p.income!==undefined){
+  const current=incomeLoad(),incoming={...p.income,specials:Array.isArray(p.income.specials)?[...p.income.specials]:[]};
+  archiveIncomeSpecials(current.specials);
+  const existingKeys=new Set(incoming.specials.map(specialKey));
+  const absent=current.specials.filter(r=>validSpecial(r)&&!existingKeys.has(specialKey(r)));
+  if(absent.length){const preview=absent.slice(0,8).map(r=>prettyDate(r.date)+' '+specialLabels[r.specialType]+' '+fmtMoney(r.cents)).join('\n');
+   if(confirm('Backup sắp nhập không chứa '+absent.length+' khoản cộng thêm đang lưu trên máy (có thể gồm Healthcare Subsidy).\n\n'+preview+'\n\nNhấn OK để GIỮ các khoản này; nhấn Hủy để thay toàn bộ Thu nhập đúng theo Backup.'))incoming.specials.push(...absent);
+  }
+  archiveIncomeSpecials(incoming.specials);
+  flexStorage.setItem(MONEYKEY,JSON.stringify(incoming));resetIncomeDeleteUndo();
+ }
+ if(p.healthcare!==undefined)flexStorage.setItem(HEALTHKEY,JSON.stringify(p.healthcare));
+ healthInputsDirty=false;vacInputsDirty=false;refresh();
+};
+// Render on reopen, date changes, manual edits, and uploads. Do not patch flexRefresh.
+window.addEventListener('focus',refresh);window.addEventListener('pageshow',refresh);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
+$('day').addEventListener('change',()=>setTimeout(refresh,0));
+$('entries').addEventListener('change',()=>setTimeout(refresh,0));
+$('flex-save-blocks').addEventListener('click',()=>setTimeout(refresh,0));
+$('flex-zero').addEventListener('click',()=>setTimeout(refresh,0));
+setInterval(refresh,60000);refresh();
+})();
+</script>
+<!-- END isolated Income + Healthcare modules -->
+
+<script id="flex-neon-navigation-only">
+/* Cosmetic DOM placement only; elements retain their original event handlers and IDs. */
+(function(){
+  const main=document.querySelector('main'), income=document.getElementById('flex-income-card'),
+        healthcare=document.getElementById('flex-health-card');
+  if(main&&income&&healthcare){main.insertBefore(income,main.firstElementChild);main.appendChild(healthcare); const foot=main.querySelector('footer');if(foot)main.appendChild(foot);}
+})();
+</script></body></html>
