@@ -1298,10 +1298,10 @@ $('fin-income-undo').onclick=()=>{
 };
 
 // Earnings display only: while Rolling stays on the real current date,
-// show yesterday's completed work through 23:59 today so late Paid Tips can land.
+// show yesterday's completed work AND today's known earnings in the same tile.
 // On Monday the income WEEK and hourly rate also remain on the prior Mon–Sun
 // week; at local Tuesday 00:00 both switch to the new Mon–Sun week, while the
-// income DAY correctly advances from Sunday to Monday (not to Tuesday).
+// day tile drops Sunday's share and carries Monday into Tuesday.
 // Manual Rolling day navigation (Auto Today OFF) still displays that chosen day.
 function incomeViewPeriod(now,rollingDay,autoToday){
  const automatic=autoToday;
@@ -1336,23 +1336,33 @@ function renderIncome(){
   $('fin-income-integrity-body').style.whiteSpace='pre-line';
  }
  const split=arr=>{const deliveries=arr.filter(r=>!r.specialType),b=deliveries.filter(r=>Number.isSafeInteger(r.baseCents)).reduce((a,r)=>a+r.baseCents,0),t=deliveries.filter(r=>Number.isSafeInteger(r.tipsCents)).reduce((a,r)=>a+r.tipsCents,0),partial=deliveries.some(r=>!Number.isSafeInteger(r.baseCents)||!Number.isSafeInteger(r.tipsCents));return !deliveries.length?'—':(fmtMoney(b)+' / '+fmtMoney(t))+(partial?' *':'')};
- // A pending delivery is NOT paid: its known Base (and any known amount)
- // belongs exclusively to the existing orange Chờ Tips line until Paid arrives.
- // The large figure and total line both show the known provisional amount.
- const waiting=data.pendingRecords.filter(r=>r.date===selected),waitingCents=sum(waiting),confirmedCents=sum(day);
- const dayEstimate=confirmedCents+waitingCents;
- $('fin-income-day').textContent=day.length||waiting.length?fmtMoney(dayEstimate):'Chưa có Earnings';
+ // The ONE existing day tile is a two-day handoff while Auto Today is ON:
+ // yesterday's Paid/Pending stays visible through 23:59, while today's known
+ // Pending Base is immediately included in the same orange Chờ Tips line.
+ // At local 00:00, the older day leaves THIS VIEW only (never its saved data).
+ // Auto Today OFF continues to show precisely the manually selected day.
+ const displayedDates=automatic?[selected,now]:[selected];
+ const inDisplay=r=>displayedDates.includes(r.date);
+ const visiblePaid=all.filter(inDisplay);
+ // Never double-count the same delivery if a legacy JSON accidentally still
+ // has a Pending row after that block has been uploaded as Paid.
+ const paidKeys=new Set(data.records.map(recordKey));
+ const waiting=data.pendingRecords.filter(r=>inDisplay(r)&&!paidKeys.has(recordKey(r)));
+ const waitingCents=sum(waiting),confirmedCents=sum(visiblePaid),dayEstimate=confirmedCents+waitingCents;
+ const hasTodayMoney=automatic&&[...visiblePaid,...waiting].some(r=>r.date===now);
+ $('fin-income-day-period').textContent=(hasTodayMoney?prettyDate(selected)+' + '+prettyDate(now):prettyDate(selected))+(automatic?' · Giữ ngày cũ đến 23:59 hôm nay':'');
+ $('fin-income-day').textContent=visiblePaid.length||waiting.length?fmtMoney(dayEstimate):'Chưa có Earnings';
  $('fin-day-paid').textContent=fmtMoney(confirmedCents);
  $('fin-day-pending').textContent=fmtMoney(waitingCents);
  $('fin-day-estimate').textContent=fmtMoney(dayEstimate);
  $('fin-income-week').textContent=week.length?fmtMoney(sum(week)):'—';
  if(waiting.length){
-  const paidDeliveries=day.filter(r=>!r.specialType);
+  const paidDeliveries=visiblePaid.filter(r=>!r.specialType);
   const knownBase=paidDeliveries.reduce((n,r)=>n+(Number.isSafeInteger(r.baseCents)?r.baseCents:0),0);
   const pendingBase=waiting.reduce((n,r)=>n+(Number.isSafeInteger(r.baseCents)?r.baseCents:r.cents),0);
   const knownTips=paidDeliveries.reduce((n,r)=>n+(Number.isSafeInteger(r.tipsCents)?r.tipsCents:0),0);
   $('fin-income-day-split').textContent='Base / Tips: '+fmtMoney(knownBase+pendingBase)+' / '+(paidDeliveries.length?fmtMoney(knownTips)+' (còn chờ)':'Chưa chốt');
- }else $('fin-income-day-split').textContent='Base / Tips: '+split(day);
+ }else $('fin-income-day-split').textContent='Base / Tips: '+split(visiblePaid);
  {const weekDisplay=split(week).split(' / ');$('fin-income-week-split').innerHTML=weekDisplay.length===2 ? '<span class="neon-week-split neon-base"><span>Base:</span><b>'+weekDisplay[0]+'</b></span><span class="neon-week-split neon-tips"><span>Tips:</span><b>'+weekDisplay[1]+'</b></span>' : 'Base / Tips: —';}
  $('fin-income-month').textContent=month.length?fmtMoney(sum(month)):'—';
  const monthDeliveries=month.filter(r=>!r.specialType);
