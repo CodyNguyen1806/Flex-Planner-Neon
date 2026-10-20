@@ -1019,16 +1019,19 @@ renderExtra();
 #flex-income-card .fin-day-breakdown .fin-line{display:flex;align-items:baseline;justify-content:space-between;gap:8px;}
 #flex-income-card .fin-day-breakdown .fin-line b{white-space:nowrap;}
 #flex-income-card #fin-income-unfinished{margin-top:8px;}
+/* Earnings display-period notes: dark text stays legible on Neon cards. */
+#flex-income-card .fin-view-period{display:block;color:#b9cbe0!important;font-size:11px!important;line-height:1.45!important;overflow-wrap:anywhere;font-weight:550;margin:0;min-height:0;}
+
 @media(max-width:390px){#flex-income-card .fin-month-split .fin-month-line{gap:4px;font-size:13px}#flex-income-card .fin-month-split .fin-month-line b{font-size:clamp(16px,4.6vw,20px)}}
 </style>
 <section class="card" id="flex-income-card"><details open><summary>Thu nhập · Ngày / Tuần / Tháng / $ mỗi giờ</summary>
 <p class="note">Thu nhập gồm <b>Base + Tips, Earnings Adjustment, Additional Tips và Healthcare Subsidy đã trả</b>. Không cộng Instant Cash Out hay Payment sent. Ảnh <b>Tips pending</b> được lưu thành tiền tạm tính, không cộng vào thu nhập đã chốt. Không thay đổi giờ Rolling.</p>
 <div class="fin-cols">
-<div class="fin-tile"><small>Tiền ngày đang xem</small><strong id="fin-income-day">—</strong><div id="fin-income-day-breakdown" class="fin-day-breakdown"><div class="fin-line"><span>Đã chốt</span><b id="fin-day-paid">$0.00</b></div><div class="fin-line"><span>Chờ Tips</span><b id="fin-day-pending" class="fin-income-pending">$0.00</b></div><div class="fin-line"><span>Tổng tạm tính</span><b id="fin-day-estimate">$0.00</b></div></div><div class="fin-mini" id="fin-income-day-split">Base / Tips: —</div></div>
-<div class="fin-tile"><small>Tiền tuần (T2–CN)</small><strong id="fin-income-week">—</strong><div class="fin-mini" id="fin-income-week-split">Base / Tips: —</div></div>
+<div class="fin-tile"><small>Tiền ngày đang xem</small><small id="fin-income-day-period" class="fin-view-period"></small><strong id="fin-income-day">—</strong><div id="fin-income-day-breakdown" class="fin-day-breakdown"><div class="fin-line"><span>Đã chốt</span><b id="fin-day-paid">$0.00</b></div><div class="fin-line"><span>Chờ Tips</span><b id="fin-day-pending" class="fin-income-pending">$0.00</b></div><div class="fin-line"><span>Tổng tạm tính</span><b id="fin-day-estimate">$0.00</b></div></div><div class="fin-mini" id="fin-income-day-split">Base / Tips: —</div></div>
+<div class="fin-tile"><small>Tiền tuần (T2–CN)</small><small id="fin-income-week-period" class="fin-view-period"></small><strong id="fin-income-week">—</strong><div class="fin-mini" id="fin-income-week-split">Base / Tips: —</div></div>
 <div class="fin-tile"><small>Tiền tháng hiện tại</small><strong id="fin-income-month">—</strong></div>
 <div class="fin-tile"><small>Base / Tips (tháng)</small><div id="fin-income-split" class="fin-month-split"><div class="fin-month-line fin-base"><span>Base:</span><b id="fin-month-base">—</b></div><div class="fin-month-line fin-tips"><span>Tips:</span><b id="fin-month-tips">—</b></div></div></div><div class="fin-tile"><small>Adjustment / Tips thêm / Healthcare (tháng)</small><strong id="fin-income-specials">—</strong><div class="fin-mini" id="fin-income-special-breakdown">Adjustment: — · Tips thêm: — · Healthcare: —</div></div>
-<div class="fin-tile"><small>Trung bình / giờ (gồm các khoản cộng thêm)</small><strong id="fin-income-rate">—</strong></div>
+<div class="fin-tile"><small>Trung bình / giờ (gồm các khoản cộng thêm)</small><small id="fin-income-rate-period" class="fin-view-period"></small><strong id="fin-income-rate">—</strong></div>
 <div class="fin-tile fin-wide"><small>Ngày đã chạy chưa chốt tiền (trong tuần)</small><strong id="fin-income-unfinished">—</strong></div>
 </div>
 <details class="flex-panel" id="fin-special-ledger"><summary>Chi tiết / Khôi phục khoản cộng thêm</summary>
@@ -1286,7 +1289,7 @@ function deleteSavedIncome(mode, date='', identity=''){
  $('fin-income-delete-status').textContent=(mode==='all'?'Đã xóa toàn bộ thu nhập.':mode==='day'?'Đã xóa thu nhập ngày '+prettyDate(date)+'.':'Đã xóa khoản đã chọn.')+' Có thể upload lại ảnh. Nhấn “Hoàn tác” nếu xóa nhầm (trước khi tải lại trang).';
  $('fin-income-status').textContent='Dữ liệu giờ Rolling và Healthcare được giữ nguyên.';
 }
-$('fin-income-delete-all').onclick=()=>deleteSavedIncome('all');$('fin-income-delete-selected').onclick=()=>{const selected=parseDate($('day')?.value)?$('day').value:today();deleteSavedIncome('day',selected)};
+$('fin-income-delete-all').onclick=()=>deleteSavedIncome('all');$('fin-income-delete-selected').onclick=()=>{const now=today(),rollingDay=parseDate($('day')?.value)?$('day').value:now;const selected=incomeViewPeriod(now,rollingDay,$('auto-today')?.checked===true).selected;deleteSavedIncome('day',selected)};
 $('fin-income-undo').onclick=()=>{
  if(!incomeDeleteUndo){$('fin-income-delete-status').textContent='Không còn bản xóa nào để hoàn tác.';return}
  if(!confirm('Khôi phục lại dữ liệu Thu nhập ngay trước lần xóa gần nhất?'))return;
@@ -1294,7 +1297,28 @@ $('fin-income-undo').onclick=()=>{
  renderIncome();$('fin-income-delete-status').textContent='Đã hoàn tác. Thu nhập trước khi xóa đã được khôi phục; Rolling và Healthcare không thay đổi.';
 };
 
-function renderIncome(){const data=incomeLoad(),selected=parseDate($('day')?.value)?$('day').value:today(),weekStart=monday(selected),weekEnd=nextDay(weekStart,6),entries=rolling(),current=ym(today());
+// Earnings display only: while Rolling stays on the real current date,
+// show yesterday's completed work through 23:59 today so late Paid Tips can land.
+// On Monday the income WEEK and hourly rate also remain on the prior Mon–Sun
+// week; at local Tuesday 00:00 both switch to the new Mon–Sun week, while the
+// income DAY correctly advances from Sunday to Monday (not to Tuesday).
+// Manual Rolling day navigation (Auto Today OFF) still displays that chosen day.
+function incomeViewPeriod(now,rollingDay,autoToday){
+ const automatic=autoToday;
+ const selected=automatic?nextDay(now,-1):rollingDay;
+ const priorWeekMonday=automatic&&parseDate(now).getDay()===1;
+ const weekAnchor=automatic?now:rollingDay;
+ const incomeWeekAnchor=priorWeekMonday?selected:weekAnchor;
+ return {selected,weekStart:monday(incomeWeekAnchor),weekEnd:nextDay(monday(incomeWeekAnchor),6),priorWeekMonday,automatic};
+}
+function renderIncome(){
+ const now=today(),rollingDay=parseDate($('day')?.value)?$('day').value:now;
+ const period=incomeViewPeriod(now,rollingDay,$('auto-today')?.checked===true);
+ const {selected,weekStart,weekEnd,priorWeekMonday,automatic}=period;
+ const data=incomeLoad(),entries=rolling(),current=ym(now);
+ $('fin-income-day-period').textContent=prettyDate(selected)+(automatic?' · Giữ đến 23:59 hôm nay':'');
+ $('fin-income-week-period').textContent=prettyDate(weekStart)+' – '+prettyDate(weekEnd)+(priorWeekMonday?' · Giữ đến 23:59 thứ Hai':'');
+ $('fin-income-rate-period').textContent='Tuần '+prettyDate(weekStart)+' – '+prettyDate(weekEnd)+(priorWeekMonday?' · Giữ đến 23:59 thứ Hai':'');
  const sum=arr=>arr.reduce((n,r)=>n+r.cents,0),all=allIncomeRecords(data),day=all.filter(r=>r.date===selected),week=all.filter(r=>r.date>=weekStart&&r.date<=weekEnd),month=all.filter(r=>ym(r.date)===current);
  const weekFin=data.finalDays.filter(d=>d>=weekStart&&d<=weekEnd&&!data.pendingRecords.some(r=>r.date===d)),mins=weekFin.reduce((n,d)=>n+(Number(entries[d]?.a)||0),0);
  const missing=Object.keys(entries).filter(d=>d>=weekStart&&d<=weekEnd&&(Number(entries[d]?.a)||0)>0&&(!data.finalDays.includes(d)||data.pendingRecords.some(r=>r.date===d))).length;
@@ -1312,13 +1336,23 @@ function renderIncome(){const data=incomeLoad(),selected=parseDate($('day')?.val
   $('fin-income-integrity-body').style.whiteSpace='pre-line';
  }
  const split=arr=>{const deliveries=arr.filter(r=>!r.specialType),b=deliveries.filter(r=>Number.isSafeInteger(r.baseCents)).reduce((a,r)=>a+r.baseCents,0),t=deliveries.filter(r=>Number.isSafeInteger(r.tipsCents)).reduce((a,r)=>a+r.tipsCents,0),partial=deliveries.some(r=>!Number.isSafeInteger(r.baseCents)||!Number.isSafeInteger(r.tipsCents));return !deliveries.length?'—':(fmtMoney(b)+' / '+fmtMoney(t))+(partial?' *':'')};
+ // A pending delivery is NOT paid: its known Base (and any known amount)
+ // belongs exclusively to the existing orange Chờ Tips line until Paid arrives.
+ // The large figure and total line both show the known provisional amount.
  const waiting=data.pendingRecords.filter(r=>r.date===selected),waitingCents=sum(waiting),confirmedCents=sum(day);
- $('fin-income-day').textContent=waiting.length?'Chờ Tips':day.length?fmtMoney(confirmedCents):'Chưa có Earnings';
+ const dayEstimate=confirmedCents+waitingCents;
+ $('fin-income-day').textContent=day.length||waiting.length?fmtMoney(dayEstimate):'Chưa có Earnings';
  $('fin-day-paid').textContent=fmtMoney(confirmedCents);
  $('fin-day-pending').textContent=fmtMoney(waitingCents);
- $('fin-day-estimate').textContent=fmtMoney(confirmedCents+waitingCents);
+ $('fin-day-estimate').textContent=fmtMoney(dayEstimate);
  $('fin-income-week').textContent=week.length?fmtMoney(sum(week)):'—';
- $('fin-income-day-split').textContent='Base / Tips: '+split(day);
+ if(waiting.length){
+  const paidDeliveries=day.filter(r=>!r.specialType);
+  const knownBase=paidDeliveries.reduce((n,r)=>n+(Number.isSafeInteger(r.baseCents)?r.baseCents:0),0);
+  const pendingBase=waiting.reduce((n,r)=>n+(Number.isSafeInteger(r.baseCents)?r.baseCents:r.cents),0);
+  const knownTips=paidDeliveries.reduce((n,r)=>n+(Number.isSafeInteger(r.tipsCents)?r.tipsCents:0),0);
+  $('fin-income-day-split').textContent='Base / Tips: '+fmtMoney(knownBase+pendingBase)+' / '+(paidDeliveries.length?fmtMoney(knownTips)+' (còn chờ)':'Chưa chốt');
+ }else $('fin-income-day-split').textContent='Base / Tips: '+split(day);
  {const weekDisplay=split(week).split(' / ');$('fin-income-week-split').innerHTML=weekDisplay.length===2 ? '<span class="neon-week-split neon-base"><span>Base:</span><b>'+weekDisplay[0]+'</b></span><span class="neon-week-split neon-tips"><span>Tips:</span><b>'+weekDisplay[1]+'</b></span>' : 'Base / Tips: —';}
  $('fin-income-month').textContent=month.length?fmtMoney(sum(month)):'—';
  const monthDeliveries=month.filter(r=>!r.specialType);
@@ -1687,10 +1721,20 @@ window.flexFinanceImport=p=>{window.flexFinanceValidate(p);
 window.addEventListener('focus',refresh);window.addEventListener('pageshow',refresh);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
 $('day').addEventListener('change',()=>setTimeout(refresh,0));
+// Rolling navigation mutates #day programmatically without a change event.
+// Repaint Earnings immediately, but never update Rolling hours or stored income.
+$('auto-today').addEventListener('change',()=>setTimeout(renderIncome,0));
+for(const id of ['today','prev','next'])$(id).addEventListener('click',()=>setTimeout(renderIncome,0));
 $('entries').addEventListener('change',()=>setTimeout(refresh,0));
 $('flex-save-blocks').addEventListener('click',()=>setTimeout(refresh,0));
 $('flex-zero').addEventListener('click',()=>setTimeout(refresh,0));
-setInterval(refresh,60000);refresh();
+// Exact local-midnight refresh while the page is active; focus/pageshow also
+// catch the date rollover if iOS/Android suspended background JavaScript.
+function scheduleIncomeMidnight(){
+ const current=new Date(),next=new Date(current.getFullYear(),current.getMonth(),current.getDate()+1);
+ setTimeout(()=>{refresh();scheduleIncomeMidnight()},Math.max(50,next.getTime()-current.getTime()+25));
+}
+setInterval(refresh,60000);scheduleIncomeMidnight();refresh();
 })();
 </script>
 <!-- END isolated Income + Healthcare modules -->
